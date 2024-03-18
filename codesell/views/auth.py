@@ -3,10 +3,11 @@ import sys
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__)))) """
 
 from flask import Blueprint, render_template, request, session, redirect, url_for, flash
-from controllers.auth_controller import authenticate_user, register_user
+from codesell.controllers.auth_controller import authenticate_user, register_user
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
-from models import User, db
-from form import RegisterForm, LoginForm
+from codesell.models import User
+from codesell import db
+from codesell.form import RegisterForm, LoginForm
 
 login_manager = LoginManager()
 

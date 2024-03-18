@@ -15,13 +15,14 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app, db)
     login_manager.init_app(app)
+    from . import models
 
-    from models import User
+    #from models import User
     @login_manager.user_loader
     def load_user(user_id):
-        return User.query.get(int(user_id))
+        return models.User.query.get(int(user_id))
 
-    from views import main, auth
+    from .views import main, auth
     app.register_blueprint(main.bp)
     app.register_blueprint(auth.auth_bp)
     #app.register_blueprint(product_bp)
