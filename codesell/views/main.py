@@ -1,5 +1,9 @@
-from flask import Flask, session, render_template
-from . import bp
+from flask import Flask, session, render_template, Blueprint
+#from . import bp
+
+print('index')
+
+bp = Blueprint('main', __name__, url_prefix = '/')
 
 @bp.route('/')
 def index():
