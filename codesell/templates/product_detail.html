@@ -12,8 +12,11 @@
             <h2>{{ product.name }}</h2>
             <p>가격: {{ product.price }}원</p>
             <p>설명: {{ product.description }}</p>
-            
-            
+            <form action="{{ url_for('cart.add_to_cart', product_id=product.id) }}" method="POST">
+                <label for="quantity">수량:</label>
+                <input type="number" name="quantity" id="quantity" min="1" value="1" required>
+                <button type="submit">장바구니에 담기</button>
+            </form>
         </div>
     {% else %}
         <p>상품을 찾을 수 없습니다.</p>

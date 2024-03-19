@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>장바구니</title>
+    <!--<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">-->
+</head>
+<body>
+    <h1>장바구니</h1>
+    
+    {% if cart %}
+        <table>
+            <thead>
+                <tr>
+                    <th>상품명</th>
+                    <th>가격</th>
+                    <th>수량</th>
+                    <th>총 가격</th>
+                    <th>삭제</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.price }}원</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ item.price * item.quantity }}원</td>
+                        <td>
+                            <form action="{{ url_for('cart.remove_from_cart', product_id=item.id) }}" method="POST">
+                                <button type="submit">삭제</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <p>총 가격: {{ total_price }}원</p>
+        
+        <form action="{{ url_for('cart.checkout') }}" method="POST">
+            <button type="submit">결제하기</button>
+        </form>
+    {% else %}
+        <p>장바구니가 비어 있습니다.</p>
+    {% endif %}
+    
+    <a href="{{ url_for('product.product_list') }}">상품 목록으로 돌아가기</a>
+</body>
+</html>

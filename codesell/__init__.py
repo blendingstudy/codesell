@@ -23,12 +23,11 @@ def create_app():
         return models.User.query.get(int(user_id))
 
     from .views import main
-    from .controllers import auth_controller, product_controller
+    from .controllers import auth_controller, product_controller, cart_controller
     app.register_blueprint(main.bp)
     app.register_blueprint(auth_controller.auth_bp)
     app.register_blueprint(product_controller.product_bp)
-    """app.register_blueprint(product.product_view) """
-    #app.register_blueprint(cart_bp)
+    app.register_blueprint(cart_controller.cart_bp)
     #app.register_blueprint(funding_bp)
     
     return app
