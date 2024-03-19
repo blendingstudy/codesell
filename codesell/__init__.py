@@ -26,6 +26,7 @@ def create_app():
     app.register_blueprint(main.bp)
     app.register_blueprint(auth.auth_bp)
     app.register_blueprint(product.product_bp)
+    app.register_blueprint(product.product_view)
     #app.register_blueprint(cart_bp)
     #app.register_blueprint(funding_bp)
     
