@@ -9,6 +9,8 @@
         <nav>
             <ul>
                 <li><a href="{{ url_for('main.index') }}">홈</a></li>
+                <li><a href="{{ url_for('product.product_list') }}">상품</a></li>
+                <!-- -->
                 {% if current_user.is_authenticated %}
                     <li>장바구니</a></li>
                     <li><a href="{{ url_for('auth.logout') }}">로그아웃</a></li>

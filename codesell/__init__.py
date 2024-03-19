@@ -22,10 +22,10 @@ def create_app():
     def load_user(user_id):
         return models.User.query.get(int(user_id))
 
-    from .views import main, auth
+    from .views import main, auth, product
     app.register_blueprint(main.bp)
     app.register_blueprint(auth.auth_bp)
-    #app.register_blueprint(product_bp)
+    app.register_blueprint(product.product_bp)
     #app.register_blueprint(cart_bp)
     #app.register_blueprint(funding_bp)
     
