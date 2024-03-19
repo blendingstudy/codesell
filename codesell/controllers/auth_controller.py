@@ -1,15 +1,8 @@
-""" import os
-import sys
-sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__)))) """
+from flask import Blueprint
+from codesell.views.auth import login, register, logout
 
-from codesell import db
-from codesell.models import User
+auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
-def authenticate_user(username, password):
-    user = User.query.filter_by(username=username, password=password).first()
-    return user
-
-def register_user(username, password):
-    user = User(username=username, password=password)
-    db.session.add(user)
-    db.session.commit()
+auth_bp.route('/login', methods=['GET', 'POST'])(login)
+auth_bp.route('/register', methods=['GET', 'POST'])(register)
+auth_bp.route('/logout')(logout)

@@ -1,9 +1,11 @@
 from flask import Blueprint, render_template
-from codesell.controllers.product_controller import product_bp
+from codesell.models import Product
 
-product_view = Blueprint('product_view', __name__)
+def product_list():
+    products = Product.query.all()
+    print(products)
+    return render_template('product_list.html', products=products)
 
-# '/products' URL로 접속 시, product_bp의 product_list 함수를 호출
-product_view.add_url_rule('/products', view_func=product_bp.product_list)
-# '/products/<int:product_id>' URL로 접속 시, product_bp의 product_detail 함수를 호출
-product_view.add_url_rule('/products/<int:product_id>', view_func=product_bp.product_detail)
+def product_detail(product_id):
+    product = Product.query.get_or_404(product_id)
+    return render_template('product_detail.html', product=product)
