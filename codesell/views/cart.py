@@ -9,6 +9,7 @@ def add_to_cart(product_id):
     session['cart'].append({'id': product.id, 'name': product.name, 'price': product.price, 'quantity': quantity})
     session.modified = True
     return redirect(url_for('product.product_detail', product_id=product_id))
+    #추후에 장바구니 페이지와 현재 페이지 중 사용자가 선택할 수 있게 변경
 
 def remove_from_cart(product_id):
     cart = session['cart']
