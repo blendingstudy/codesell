@@ -25,9 +25,9 @@ def view_cart():
     total_price = sum(item['price'] * item['quantity'] for item in cart)
     return render_template('cart.html', cart=cart, total_price=total_price)
 
-def checkout():
+""" def checkout():
     # 결제 처리 로직 구현
     # 결제 완료 후 장바구니 비우기
     session['cart'] = []
     session.modified = True
-    return redirect(url_for('main.index'))
+    return redirect(url_for('main.index')) """

@@ -33,3 +33,4 @@ class FundingProject(db.Model):
     goal = db.Column(db.Integer, nullable=False)
     current_amount = db.Column(db.Integer, default=0)
     end_date = db.Column(db.String(120), nullable=False)
+
