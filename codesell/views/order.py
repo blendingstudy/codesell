@@ -1,6 +1,5 @@
 from flask import render_template, request, redirect, url_for, flash
 from codesell.models import Order, OrderItem
-from controllers.order_controller import order_bp, process_payment, update_order_status
 
 def checkout():
     if request.method == 'POST':
@@ -37,3 +36,10 @@ def checkout():
 def order_complete(order_id):
     order = Order.query.get(order_id)
     return render_template('order_complete.html', order=order)
+
+def process_payment(order):
+    response = request.post(url_for('order.process_payment'), data={'order_id': order.id})
+    return response.json()
+
+def update_order_status(order, status):
+    request.post(url_for('order.update_order_status'), data={'order_id': order.id, 'status': status})

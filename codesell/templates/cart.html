@@ -37,7 +37,7 @@
         
         <p>총 가격: {{ total_price }}원</p>
         
-        <form action="{{ url_for('cart.checkout') }}" method="POST">
+        <form action="{{ url_for('order.checkout') }}" method="GET">
             <button type="submit">결제하기</button>
         </form>
     {% else %}
