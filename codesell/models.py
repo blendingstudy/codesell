@@ -61,6 +61,10 @@ class Order(db.Model):
         for item in self.items:
             total += item.get_subtotal()
         return total
+    
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
 
 class OrderItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -79,3 +83,7 @@ class OrderItem(db.Model):
     def get_subtotal(self):
         product = Product.query.get(self.product_id)
         return product.price * self.quantity
+    
+    def save(self):
+        db.session.add(self)
+        db.session.commit()

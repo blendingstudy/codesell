@@ -1,5 +1,6 @@
 from flask import render_template, request, redirect, url_for, flash
 from codesell.models import Order, OrderItem
+import requests
 
 def checkout():
     if request.method == 'POST':
@@ -25,7 +26,7 @@ def checkout():
         if result['status'] == 'paid':
             update_order_status(order, 'paid')
             flash('결제가 완료되었습니다.')
-            return redirect(url_for('order.order_complete', order_id=order.id))
+            return order_complete(order.id)
         else:
             update_order_status(order, 'failed')
             flash('결제에 실패하였습니다.')
@@ -38,7 +39,9 @@ def order_complete(order_id):
     return render_template('order_complete.html', order=order)
 
 def process_payment(order):
-    response = request.post(url_for('order.process_payment'), data={'order_id': order.id})
+    url = url_for('order.process_payment', _external=True)
+    data = {'order_id': order.id}
+    response = requests.post(url, data=data)
     return response.json()
 
 def update_order_status(order, status):
