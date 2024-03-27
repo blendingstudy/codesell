@@ -1,8 +1,9 @@
-from flask import render_template, request, redirect, url_for, flash
+from flask import render_template, request, redirect, url_for, flash, session
 from codesell.models import Order, OrderItem
 import requests
 
 def checkout():
+    cart_items = session.get('cart', [])
     if request.method == 'POST':
         # 주문 정보 생성
         order = Order(
@@ -14,11 +15,9 @@ def checkout():
         )
         order.save()
 
-        # 주문 상품 정보 생성
-        cart_items = request.form.getlist('cart_items')
+        # 주문 상품 정보 생성        
         for item in cart_items:
-            product_id, quantity = item.split(':')
-            order_item = OrderItem(order=order, product_id=product_id, quantity=quantity)
+            order_item = OrderItem(order=order, product_id=item['id'], quantity=item['quantity'])
             order_item.save()
 
         # 결제 프로세스 진행
@@ -42,7 +41,11 @@ def process_payment(order):
     url = url_for('order.process_payment', _external=True)
     data = {'order_id': order.id}
     response = requests.post(url, data=data)
+    print(response.json())
     return response.json()
 
 def update_order_status(order, status):
-    request.post(url_for('order.update_order_status'), data={'order_id': order.id, 'status': status})
+    url = url_for('order.update_order_status', _external=True)
+    data = {'order_id': order.id, 'status': status}
+    response = requests.post(url, data=data)
+    return response.json()

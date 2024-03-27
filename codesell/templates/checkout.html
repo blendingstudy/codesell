@@ -2,10 +2,12 @@
 <html>
 <head>
     <title>Checkout</title>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.1.8.js"></script>
 </head>
 <body>
     <h1>Checkout</h1>
-    <form id="checkout-form" action="{{ url_for('order.checkout') }}" method="POST">
+    <form id="checkout-form">
         <label for="buyer_email">Email:</label>
         <input type="email" id="buyer_email" name="buyer_email" required><br>
         
@@ -21,12 +23,78 @@
         <label for="buyer_postcode">Postcode:</label>
         <input type="text" id="buyer_postcode" name="buyer_postcode" required><br>
         
-        <!-- 장바구니에서 가져온 상품 정보를 히든 필드로 추가 -->
-        {% for item in cart_items %}
-        <input type="hidden" name="cart_items" value="{{ item.product_id }}:{{ item.quantity }}">
-        {% endfor %}
+        <ul>
+            {% for item in cart_items %}
+            <li>
+                {{ item.name }} - Quantity: {{ item.quantity }}
+                <input type="hidden" name="cart_items" value="{{ item.product_id }}:{{ item.quantity }}">
+            </li>
+            {% endfor %}
+        </ul>
         
         <button type="submit">결제하기</button>
     </form>
+
+    <script>
+    $(function() {
+        $('#checkout-form').submit(function(e) {
+            e.preventDefault();
+            var IMP = window.IMP;
+            IMP.init('imp38825147');
+
+            var buyer_email = $('#buyer_email').val();
+            var buyer_name = $('#buyer_name').val();
+            var buyer_tel = $('#buyer_tel').val();
+            var buyer_addr = $('#buyer_addr').val();
+            var buyer_postcode = $('#buyer_postcode').val();
+
+            IMP.request_pay({
+                pg : 'html5_inicis',
+                pay_method : 'card',
+                merchant_uid : 'merchant_' + new Date().getTime(),
+                name : '주문명:결제테스트',
+                amount : 1, //바꾸기
+                buyer_email : buyer_email,
+                buyer_name : buyer_name,
+                buyer_tel : buyer_tel,
+                buyer_addr : buyer_addr,
+                buyer_postcode : buyer_postcode
+            }, function(rsp) {
+                if (rsp.success) {
+                    var msg = '결제가 완료되었습니다.';
+                    msg += '고유ID : ' + rsp.imp_uid;
+                    msg += '상점 거래ID : ' + rsp.merchant_uid;
+                    msg += '결제 금액 : ' + rsp.paid_amount;
+                    msg += '카드 승인번호 : ' + rsp.apply_num;
+
+                    // 결제 성공 시 처리할 로직을 작성합니다.
+                    // 예: 서버로 결제 정보를 전송하고 주문을 완료 처리합니다.
+                    $.ajax({
+                        type: 'POST',
+                        url: '/order/process_payment',
+                        data: {
+                            imp_uid: rsp.imp_uid,
+                            merchant_uid: rsp.merchant_uid,
+                            // 기타 필요한 데이터
+                        },
+                        success: function(data) {
+                            if (data.result === 'success') {
+                                alert('주문이 완료되었습니다.');
+                                window.location.href = '/order/complete';
+                            } else {
+                                alert('주문 처리 중 오류가 발생했습니다.');
+                            }
+                        }
+                    });
+                } else {
+                    var msg = '결제에 실패하였습니다.';
+                    msg += '에러내용 : ' + rsp.error_msg;
+                    // 결제 실패 시 처리할 로직을 작성합니다.
+                    alert(msg);
+                }
+            });
+        });
+    });
+    </script>
 </body>
 </html>

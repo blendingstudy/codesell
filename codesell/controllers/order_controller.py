@@ -11,6 +11,7 @@ order_bp.route('/checkout', methods=['GET', 'POST'])(checkout)
 
 @order_bp.route('/process_payment', methods=['POST'])
 def process_payment():
+    print("order_controller")
     order_id = request.form['order_id']
     order = Order.query.get(order_id)
     
