@@ -1,7 +1,7 @@
 // 문서 로딩 완료 후 실행
 document.addEventListener('DOMContentLoaded', function() {
     // 폼 제출 이벤트 처리
-    const form = document.querySelector('form');
+    /* const form = document.querySelector('form');
     if (form) {
         form.addEventListener('submit', function(event) {
             event.preventDefault();
@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // 버튼 클릭 시 수행할 동작 작성
             // 예: 페이지 이동, 데이터 로딩 등
         });
-    });
+    }); */
 
     // 비동기 요청 예시 (상품 목록 로딩)
     const productList = document.querySelector('.product-list');

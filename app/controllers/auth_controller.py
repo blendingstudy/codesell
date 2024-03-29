@@ -10,7 +10,7 @@ auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
-        return redirect(url_for('main.index'))
+        return redirect(url_for('index'))
     
     form = RegistrationForm()
     if form.validate_on_submit():
@@ -28,16 +28,17 @@ def register():
         db.session.add(new_user)
         db.session.commit()
         
-        login_user(new_user)
-        flash('Registration successful. You are now logged in.', 'success')
-        return redirect(url_for('product.index'))
+        #return redirect(url_for('product.index'))
+        return redirect(url_for('auth.login'))
+    else:
+        flash('Please correct the errors below.', 'error')
     
     return render_template('register.html', title='Register', form=form)
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('main.index'))
+        return redirect(url_for('index'))
     
     form = LoginForm()
     if form.validate_on_submit():
@@ -46,11 +47,11 @@ def login():
         
         user = User.query.filter_by(email=email).first()
         if user and user.check_password(password):
-            login_user(user, remember=form.remember_me.data)
+            login_user(user)
             flash('Login successful.', 'success')
             next_page = request.args.get('next')
             if not next_page or urlparse(next_page).netloc != '':
-                next_page = url_for('main.index')
+                next_page = url_for('index')
             return redirect(next_page)
         else:
             flash('Invalid email or password.', 'error')
@@ -63,4 +64,4 @@ def login():
 def logout():
     logout_user()
     flash('You have been logged out.', 'success')
-    return redirect(url_for('product.index'))
+    return redirect(url_for('index'))
