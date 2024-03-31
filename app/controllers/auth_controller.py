@@ -47,6 +47,7 @@ def login():
         
         user = User.query.filter_by(email=email).first()
         if user and user.check_password(password):
+            #login_user(user, remember=form.remember_me.data)
             login_user(user)
             flash('Login successful.', 'success')
             next_page = request.args.get('next')
