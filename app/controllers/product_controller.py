@@ -1,6 +1,8 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from app.models.product import Product
+from app.models.category import Category
 from app import db
+from app.forms import ProductForm
 
 product_bp = Blueprint('product', __name__, url_prefix='/products')
 
@@ -11,22 +13,24 @@ def index():
 
 @product_bp.route('/create', methods=['GET', 'POST'])
 def create_product():
-    if request.method == 'POST':
-        name = request.form['name']
-        description = request.form['description']
-        price = request.form['price']
-        quantity = request.form['quantity']
-        image_url = request.form['image_url']
-        category_id = request.form['category_id']
-
-        new_product = Product(name, description, price, quantity, image_url, category_id)
-        db.session.add(new_product)
+    form = ProductForm()
+    categories = Category.query.all()
+    form.category_id.choices = [(category.id, category.name) for category in categories]
+    if form.validate_on_submit():
+        product = Product(
+            name=form.name.data,
+            description=form.description.data,
+            price=form.price.data,
+            quantity=form.quantity.data,
+            image_url=form.image_url.data,
+            category_id=form.category_id.data
+        )
+        db.session.add(product)
         db.session.commit()
-
         flash('Product created successfully.', 'success')
-        return redirect(url_for('products'))
-
-    return render_template('product/create.html') #필요
+        return redirect(url_for('product.index'))
+    
+    return render_template('product_create.html', form=form)
 
 @product_bp.route('/<int:product_id>')
 def get_product(product_id):
@@ -60,3 +64,19 @@ def delete_product(product_id):
 
     flash('Product deleted successfully.', 'success')
     return redirect(url_for('products'))
+
+""" @product_bp.route('/create', methods=['GET', 'POST'])
+def create_product():
+    form = ProductForm()
+    if form.validate_on_submit():
+        product = Product(
+            name=form.name.data,
+            description=form.description.data,
+            price=form.price.data,
+            quantity=form.quantity.data
+        )
+        db.session.add(product)
+        db.session.commit()
+        flash('Product created successfully.', 'success')
+        return redirect(url_for('product.index'))
+    return render_template('product/create.html', form=form) """
