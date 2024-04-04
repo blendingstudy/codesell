@@ -63,20 +63,4 @@ def delete_product(product_id):
     db.session.commit()
 
     flash('Product deleted successfully.', 'success')
-    return redirect(url_for('products'))
-
-""" @product_bp.route('/create', methods=['GET', 'POST'])
-def create_product():
-    form = ProductForm()
-    if form.validate_on_submit():
-        product = Product(
-            name=form.name.data,
-            description=form.description.data,
-            price=form.price.data,
-            quantity=form.quantity.data
-        )
-        db.session.add(product)
-        db.session.commit()
-        flash('Product created successfully.', 'success')
-        return redirect(url_for('product.index'))
-    return render_template('product/create.html', form=form) """
+    return redirect(url_for('product.index'))
