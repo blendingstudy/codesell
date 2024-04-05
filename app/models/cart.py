@@ -9,14 +9,16 @@ class CartItem(BaseModel):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
     quantity = db.Column(db.Integer, nullable=False, default=1)
+    cart_id = db.Column(db.Integer, db.ForeignKey('carts.id'), nullable=False)
 
     user = db.relationship('User', backref=db.backref('cart_items', lazy=True))
     product = db.relationship('Product', backref=db.backref('cart_items', lazy=True))
 
-    def __init__(self, user_id, product_id, quantity=1):
+    def __init__(self, user_id, product_id, cart_id, quantity=1):
         self.user_id = user_id
         self.product_id = product_id
         self.quantity = quantity
+        self.cart_id = cart_id
 
     def __repr__(self):
         return f'<CartItem {self.id}>'
@@ -26,6 +28,8 @@ class Cart(BaseModel):
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     user = db.relationship('User', backref=db.backref('cart', uselist=False, lazy=True))
+
+    items = db.relationship('CartItem', backref='cart', lazy=True)
 
     def __init__(self, user_id):
         self.user_id = user_id
