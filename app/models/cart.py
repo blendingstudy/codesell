@@ -34,12 +34,14 @@ class Cart(BaseModel):
     def __init__(self, user_id):
         self.user_id = user_id
 
-    def add_item(self, product_id, quantity=1):
+    def add_item(self, product_id, quantity=1, cart_id=None):
+        if not cart_id:
+            cart_id = self.id
         cart_item = CartItem.query.filter_by(user_id=self.user_id, product_id=product_id).first()
         if cart_item:
             cart_item.quantity += quantity
         else:
-            cart_item = CartItem(user_id=self.user_id, product_id=product_id, quantity=quantity)
+            cart_item = CartItem(user_id=self.user_id, product_id=product_id, cart_id=cart_id, quantity=quantity)
             db.session.add(cart_item)
         db.session.commit()
 

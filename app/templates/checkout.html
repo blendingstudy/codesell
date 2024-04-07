@@ -13,8 +13,14 @@
             <label for="shipping_address">Shipping Address</label>
             <textarea class="form-control" id="shipping_address" name="shipping_address" rows="3" required></textarea>
           </div>
-          <button type="submit" class="btn btn-primary">Place Order</button>
+          <button type="submit" id="pay-button" class="btn btn-primary">결제하기</button>
         </form>
+        <script>
+          var totalPrice = '{{ cart.get_total_price() }}';
+          var userEmail = '{{ current_user.email }}';
+          var userName = '{{ current_user.username }}';
+        </script>
+        <script src="{{ url_for('static', filename='js/checkout.js') }}"></script>
       </div>
       <div class="col-md-4">
         <h3>Order Summary</h3>

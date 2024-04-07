@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, current_user
 from app.models.order import Order, OrderItem
 from app.models.cart import Cart, CartItem
@@ -16,7 +16,11 @@ def create_order():
 
     if request.method == 'POST':
         shipping_address = request.form['shipping_address']
+        imp_uid = request.form.get('imp_uid')
+        merchant_uid = request.form.get('merchant_uid')
+
         order = Order(user_id=current_user.id, total_amount=cart.get_total_price(), shipping_address=shipping_address)
+        order.status = 'paid'  # 결제 완료 상태로 설정
         db.session.add(order)
         db.session.commit()
 
@@ -28,6 +32,7 @@ def create_order():
         cart.clear()
         flash('Order created successfully.', 'success')
         return redirect(url_for('order.order_detail', order_id=order.id))
+        #return jsonify({'order_id': order.id})
 
     return render_template('checkout.html', cart=cart)
 

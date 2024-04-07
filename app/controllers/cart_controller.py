@@ -28,7 +28,7 @@ def add_to_cart(product_id):
         cart = Cart(user_id=current_user.id)
         db.session.add(cart)
         db.session.commit()
-    cart.add_item(product_id, quantity)
+    cart.add_item(product_id, quantity, cart_id=cart.id)
     flash(f'{product.name} added to cart.', 'success')
     return redirect(url_for('cart.cart_detail'))
 
