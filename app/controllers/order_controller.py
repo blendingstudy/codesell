@@ -31,8 +31,10 @@ def create_order():
 
         cart.clear()
         flash('Order created successfully.', 'success')
-        return redirect(url_for('order.order_detail', order_id=order.id))
-        #return jsonify({'order_id': order.id})
+        jsonify({'order_id': order.id})
+        print(order.id)
+        #return redirect(url_for('order.order_detail', order_id=order.id))
+        return jsonify({'order_id': order.id})
 
     return render_template('checkout.html', cart=cart)
 

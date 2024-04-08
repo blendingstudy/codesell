@@ -13,10 +13,10 @@
             <label for="shipping_address">Shipping Address</label>
             <textarea class="form-control" id="shipping_address" name="shipping_address" rows="3" required></textarea>
           </div>
-          <button type="submit" id="pay-button" class="btn btn-primary">결제하기</button>
+          <button type="button" id="pay-button" class="btn btn-primary">결제하기</button>
         </form>
         <script>
-          var totalPrice = '{{ cart.get_total_price() }}';
+          var totalPrice = '{{ cart.get_total_price()|int }}';
           var userEmail = '{{ current_user.email }}';
           var userName = '{{ current_user.username }}';
         </script>
