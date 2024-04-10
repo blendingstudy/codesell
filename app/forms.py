@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, TextAreaField, FloatField, IntegerField, SelectField
+from wtforms import StringField, PasswordField, SubmitField, TextAreaField, FloatField, IntegerField, SelectField, DateField
 from wtforms.validators import DataRequired, Email, EqualTo, NumberRange
 
 class RegistrationForm(FlaskForm):
@@ -22,3 +22,18 @@ class ProductForm(FlaskForm):
     image_url = StringField('Image Url')
     category_id = SelectField('Category', coerce=int)
     submit = SubmitField('Add Product')
+
+class FundingCreateForm(FlaskForm):
+    title = StringField('Title', validators=[DataRequired()])
+    description = TextAreaField('Description', validators=[DataRequired()])
+    goal_amount = IntegerField('Goal Amount', validators=[DataRequired(), NumberRange(min=1)])
+    start_date = DateField('Start Date', validators=[DataRequired()])
+    end_date = DateField('End Date', validators=[DataRequired()])
+    submit = SubmitField('Create Funding')
+
+class FundingUpdateForm(FlaskForm):
+    title = StringField('Title', validators=[DataRequired()])
+    description = TextAreaField('Description', validators=[DataRequired()])
+    goal_amount = IntegerField('Goal Amount', validators=[DataRequired(), NumberRange(min=1)])
+    end_date = DateField('End Date', validators=[DataRequired()])
+    submit = SubmitField('Update Funding')

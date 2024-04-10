@@ -1,23 +1,39 @@
+from datetime import datetime
 from app import db
-from app.models import BaseModel
-from app.models.user import User
-from app.models.product import Product
 
-class Funding(BaseModel):
-    __tablename__ = 'fundings'
-
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
-    amount = db.Column(db.Float, nullable=False)
-    status = db.Column(db.String(20), nullable=False, default='pending')
-
-    user = db.relationship('User', backref=db.backref('fundings', lazy=True))
-    product = db.relationship('Product', backref=db.backref('fundings', lazy=True))
-
-    def __init__(self, user_id, product_id, amount):
-        self.user_id = user_id
-        self.product_id = product_id
-        self.amount = amount
-
+class Funding(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    goal_amount = db.Column(db.Integer, nullable=False)
+    current_amount = db.Column(db.Integer, default=0)
+    start_date = db.Column(db.DateTime, nullable=False)
+    end_date = db.Column(db.DateTime, nullable=False)
+    status = db.Column(db.String(20), default='ongoing')
+    creator_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    creator = db.relationship('User', backref=db.backref('fundings', lazy=True))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    def __init__(self, title, description, goal_amount, start_date, end_date, creator_id):
+        self.title = title
+        self.description = description
+        self.goal_amount = goal_amount
+        self.start_date = start_date
+        self.end_date = end_date
+        self.creator_id = creator_id
+    
     def __repr__(self):
-        return f'<Funding {self.id}>'
+        return f'<Funding {self.title}>'
+    
+    def is_funded(self):
+        return self.current_amount >= self.goal_amount
+    
+    def is_ongoing(self):
+        return self.status == 'ongoing' and datetime.utcnow() < self.end_date
+    
+    def update_status(self):
+        if self.is_funded():
+            self.status = 'success'
+        elif not self.is_ongoing():
+            self.status = 'fail'
+        db.session.commit()

@@ -28,12 +28,36 @@
         </div>
     </section>
 
+    <section class="featured-fundings">
+        <div class="container">
+            <h2>Featured Fundings</h2>
+            <div class="funding-list">
+                {% for funding in featured_fundings %}
+                    <div class="funding-card">
+                        <h3>{{ funding.title }}</h3>
+                        <p>{{ funding.description }}</p>
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" style="width: {{ (funding.current_amount / funding.goal_amount) * 100 }}%;" aria-valuenow="{{ funding.current_amount }}" aria-valuemin="0" aria-valuemax="{{ funding.goal_amount }}"></div>
+                        </div>
+                        <p>Raised: ${{ funding.current_amount }} / ${{ funding.goal_amount }}</p>
+                        <a href="{{ url_for('funding.funding_detail', funding_id=funding.id) }}" class="btn btn-secondary">View Details</a>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="text-center mt-4">
+                <a href="{{ url_for('funding.funding_list') }}" class="btn btn-primary">View All Fundings</a>
+            </div>
+        </div>
+    </section>
+
     <section class="cta">
         <div class="container">
             <h2>Start Selling Your Code</h2>
             <p>Join our platform and showcase your coding projects to the world.</p>
             <a href="{{ url_for('auth.register') }}" class="btn btn-primary">Sign Up Now</a>
-            <a href="{{ url_for('product.create_product') }}" class="btn btn-primary">Add Product</a> <!-- 관리자만 할 수 있게 바꾸기 -->
+            {% if current_user.is_admin %}
+                <a href="{{ url_for('product.create_product') }}" class="btn btn-primary">Add Product</a>
+            {% endif %}
         </div>
     </section>
 {% endblock %}
