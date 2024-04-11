@@ -16,7 +16,7 @@
       </ul>
       
       {% if funding.is_ongoing() %}
-        <form action="{{ url_for('funding.funding_participate', funding_id=funding.id) }}" method="post">
+        <form action="{{ url_for('funding.funding_participate', funding_id=funding.id) }}" method="post" class="participate-form">
           <div class="input-group mb-3">
             <input type="number" name="amount" class="form-control" placeholder="Participation Amount" required>
             <div class="input-group-append">
@@ -24,6 +24,7 @@
             </div>
           </div>
         </form>
+        <script src="{{ url_for('static', filename='js/funding.js') }}"></script>
       {% endif %}
       
       {% if current_user == funding.creator %}
