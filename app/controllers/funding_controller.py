@@ -16,7 +16,17 @@ def funding_list():
 @funding_bp.route('/fundings/<int:funding_id>')
 def funding_detail(funding_id):
     funding = Funding.query.get_or_404(funding_id)
-    return render_template('funding_detail.html', funding=funding)
+    funding.update_status()
+    
+    if funding.is_ongoing():
+        # 펀딩이 진행 중인 경우
+        return render_template('funding_detail.html', funding=funding)
+    elif funding.is_funded():
+        # 펀딩이 성공한 경우
+        return render_template('funding_success.html', funding=funding)
+    else:
+        # 펀딩이 실패한 경우
+        return render_template('funding_fail.html', funding=funding)
 
 @funding_bp.route('/fundings/create', methods=['GET', 'POST'])
 def funding_create():

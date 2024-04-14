@@ -26,15 +26,16 @@ class Funding(db.Model):
     def __repr__(self):
         return f'<Funding {self.title}>'
     
-    def is_funded(self):
-        return self.current_amount >= self.goal_amount
-    
-    def is_ongoing(self):
-        return self.status == 'ongoing' and datetime.utcnow() < self.end_date
-    
     def update_status(self):
         if self.is_funded():
             self.status = 'success'
         elif not self.is_ongoing():
             self.status = 'fail'
         db.session.commit()
+    
+    def is_ongoing(self):
+        current_date = datetime.utcnow().date()
+        return self.start_date.date() <= current_date <= self.end_date.date()
+    
+    def is_funded(self):
+        return self.current_amount >= self.goal_amount

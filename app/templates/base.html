@@ -15,6 +15,7 @@
                 <li><a href="{{ url_for('index') }}">Home</a></li>
                 <li><a href="{{ url_for('product.index') }}">Products</a></li>
                 <li><a href="{{ url_for('cart.cart_detail') }}">Cart</a></li>
+                <li><a href="{{ url_for('funding.funding_list') }}">Funding</a></li>
                 {% if current_user.is_authenticated %}
                     <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
                 {% else %}
