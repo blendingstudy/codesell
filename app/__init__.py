@@ -36,11 +36,13 @@ def create_app():
     from app.controllers.cart_controller import cart_bp
     from app.controllers.order_controller import order_bp
     from app.controllers.funding_controller import funding_bp
+    from app.controllers.mypage_controller import mypage_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(product_bp)
     app.register_blueprint(cart_bp)
     app.register_blueprint(order_bp)
     app.register_blueprint(funding_bp)
+    app.register_blueprint(mypage_bp)
 
     return app

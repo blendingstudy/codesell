@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+  <h1>My Page</h1>
+  <p><a href="{{ url_for('mypage.edit_profile') }}">Edit Profile</a></p>
+  
+  <div class="row">
+    <div class="col-md-6">
+      <h2>Order History</h2>
+      {% if orders %}
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Date</th>
+              <th>Total Amount</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for order in orders %}
+              <tr>
+                <td>{{ order.id }}</td>
+                <td>{{ order.created_at.strftime('%Y-%m-%d') }}</td>
+                <td>${{ order.total_amount }}</td>
+                <td>
+                  <a href="{{ url_for('order.order_detail', order_id=order.id) }}" class="btn btn-primary btn-sm">View Details</a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p>No orders found.</p>
+      {% endif %}
+    </div>
+    
+    <div class="col-md-6">
+      <h2>Cart</h2>
+      {% if cart_items %}
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Quantity</th>
+              <th>Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in cart_items %}
+              <tr>
+                <td>{{ item.product.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>${{ item.product.price }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <a href="{{ url_for('cart.cart_detail') }}" class="btn btn-primary">View Cart</a>
+      {% else %}
+        <p>Your cart is empty.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

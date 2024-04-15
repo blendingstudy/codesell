@@ -18,6 +18,7 @@
                 <li><a href="{{ url_for('funding.funding_list') }}">Funding</a></li>
                 {% if current_user.is_authenticated %}
                     <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+                    <li><a href="{{ url_for('mypage.index') }}">MyPage</a></li>
                 {% else %}
                     <li><a href="{{ url_for('auth.login') }}">Login</a></li>
                     <li><a href="{{ url_for('auth.register') }}">Register</a></li>
