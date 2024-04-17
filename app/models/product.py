@@ -10,7 +10,9 @@ class Product(BaseModel):
     quantity = db.Column(db.Integer, nullable=False)
     image_url = db.Column(db.String(200))
     category_id = db.Column(db.Integer, db.ForeignKey('categories.id'))
-    category = db.relationship('Category', backref='products')
+    category = db.relationship('Category', backref=db.backref('products', lazy=True), foreign_keys=[category_id])
+    language_id = db.Column(db.Integer, db.ForeignKey('categories.id'), nullable=False)
+    language = db.relationship('Category', backref=db.backref('language_products', lazy=True), foreign_keys=[language_id])
 
     def __init__(self, name, description, price, quantity, image_url, category_id):
         self.name = name

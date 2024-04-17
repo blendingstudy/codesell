@@ -14,6 +14,8 @@
               <h5 class="card-title">{{ product.name }}</h5>
               <p class="card-text">{{ product.description }}</p>
               <p class="card-text">Price: ${{ product.price }}</p>
+              <p class="card-text">Language: {{ product.language.name }}</p>
+              <p class="card-text">Usage: {{ product.category.name }}</p>
               <a href="{{ url_for('product.get_product', product_id=product.id) }}" class="btn btn-primary">View Details</a>
             </div>
           </div>

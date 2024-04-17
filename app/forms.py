@@ -20,7 +20,8 @@ class ProductForm(FlaskForm):
     price = FloatField('Price', validators=[DataRequired(), NumberRange(min=0)])
     quantity = IntegerField('Quantity', validators=[DataRequired(), NumberRange(min=0)])
     image_url = StringField('Image Url')
-    category_id = SelectField('Category', coerce=int)
+    language = SelectField('Language', coerce=int, validators=[DataRequired()])
+    usage = SelectField('Usage', coerce=int, validators=[DataRequired()])
     submit = SubmitField('Add Product')
 
 class FundingCreateForm(FlaskForm):

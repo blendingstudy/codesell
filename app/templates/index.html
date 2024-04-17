@@ -55,9 +55,6 @@
             <h2>Start Selling Your Code</h2>
             <p>Join our platform and showcase your coding projects to the world.</p>
             <a href="{{ url_for('auth.register') }}" class="btn btn-primary">Sign Up Now</a>
-            <!-- {% if current_user.is_admin %}
-                <a href="{{ url_for('product.create_product') }}" class="btn btn-primary">Add Product</a>
-            {% endif %} -->
             <a href="{{ url_for('product.create_product') }}" class="btn btn-primary">Add Product</a>
             <a href="{{ url_for('funding.funding_create') }}" class="btn btn-primary">Add Funding Product</a>
         </div>
