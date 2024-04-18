@@ -16,11 +16,13 @@ def funding_list():
 @funding_bp.route('/fundings/<int:funding_id>')
 def funding_detail(funding_id):
     funding = Funding.query.get_or_404(funding_id)
+    recent_participations = Participation.query.filter_by(funding_id=funding_id).order_by(Participation.created_at.desc()).limit(5).all()
+    top_participations = Participation.query.filter_by(funding_id=funding_id).order_by(Participation.amount.desc()).limit(5).all()
     funding.update_status()
     
     if funding.is_ongoing():
         # 펀딩이 진행 중인 경우
-        return render_template('funding_detail.html', funding=funding)
+        return render_template('funding_detail.html', funding=funding, recent_participations=recent_participations, top_participations=top_participations)
     elif funding.is_funded():
         # 펀딩이 성공한 경우
         return render_template('funding_success.html', funding=funding)

@@ -8,14 +8,34 @@ product_bp = Blueprint('product', __name__, url_prefix='/products')
 
 @product_bp.route('/')
 def index():
-    products = Product.query.all()
-    return render_template('product_list.html', products=products)
+    language_id = request.args.get('language')
+    usage_id = request.args.get('usage')
+    
+    products = Product.query
+    
+    if language_id:
+        products = products.filter_by(language_id=language_id)
+    
+    if usage_id:
+        products = products.filter_by(category_id=usage_id)
+    
+    products = products.all()
+    
+    languages = Category.query.filter_by(type='language').all()
+    usages = Category.query.filter_by(type='usage').all()
+    
+    return render_template('product_list.html', products=products, languages=languages, usages=usages,
+                           selected_language=language_id, selected_usage=usage_id)
 
 @product_bp.route('/create', methods=['GET', 'POST'])
 def create_product():
     form = ProductForm()
     language_categories = Category.query.filter_by(type='language').all()
     usage_categories = Category.query.filter_by(type='usage').all()
+    
+    form.language.choices = [(category.id, category.name) for category in language_categories]
+    form.usage.choices = [(category.id, category.name) for category in usage_categories]
+    
     if form.validate_on_submit():
         language_id = request.form['language']
         usage_id = request.form['usage']

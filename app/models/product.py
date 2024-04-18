@@ -14,13 +14,14 @@ class Product(BaseModel):
     language_id = db.Column(db.Integer, db.ForeignKey('categories.id'), nullable=False)
     language = db.relationship('Category', backref=db.backref('language_products', lazy=True), foreign_keys=[language_id])
 
-    def __init__(self, name, description, price, quantity, image_url, category_id):
+    def __init__(self, name, description, price, quantity, image_url, category_id, language_id):
         self.name = name
         self.description = description
         self.price = price
         self.quantity = quantity
         self.image_url = image_url
         self.category_id = category_id
+        self.language_id = language_id
 
     def __repr__(self):
         return f'<Product {self.name}>'

@@ -36,5 +36,25 @@
         </div>
       {% endif %}
     </div>
+    
+    <div class="col-md-4">
+      <h2>Recent Participants</h2>
+      <ul class="list-group">
+        {% for participation in recent_participations %}
+          <li class="list-group-item">
+            {{ participation.user.username }} - ${{ participation.amount }}
+          </li>
+        {% endfor %}
+      </ul>
+      
+      <h2 class="mt-4">Top Participants</h2>
+      <ul class="list-group">
+        {% for participation in top_participations %}
+          <li class="list-group-item">
+            {{ participation.user.username }} - ${{ participation.amount }}
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
   </div>
 {% endblock %}
