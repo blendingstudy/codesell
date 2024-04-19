@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <h1>Funding Failed</h1>
+        <p>Unfortunately, the funding campaign "{{ funding.title }}" did not reach its goal within the specified funding period.</p>
+        
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">{{ funding.title }}</h5>
+            <p class="card-text">{{ funding.description }}</p>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">Goal Amount: ${{ funding.goal_amount }}</li>
+              <li class="list-group-item">Total Funded: ${{ funding.current_amount }}</li>
+              <li class="list-group-item">Funding Period: {{ funding.start_date.strftime('%Y-%m-%d') }} to {{ funding.end_date.strftime('%Y-%m-%d') }}</li>
+            </ul>
+          </div>
+        </div>
+        
+        <p class="mt-4">We appreciate the support and contributions from all the backers who believed in this project. However, as the funding goal was not met, the project will not be moving forward at this time.</p>
+        
+        <p>All contributions will be refunded to the respective backers' accounts within the next 5-7 business days.</p>
+        
+        <p>The project creator may choose to relaunch the funding campaign in the future with modifications or pursue alternative funding options.</p>
+        
+        <p>Thank you for your understanding and support.</p>
+        
+        <a href="{{ url_for('funding.funding_list') }}" class="btn btn-primary mt-4">Back to Funding List</a>
+      </div>
+    </div>
+  </div>
+{% endblock %}

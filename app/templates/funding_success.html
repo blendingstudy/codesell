@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <h1>Funding Successful!</h1>
+        <p>Congratulations! The funding campaign "{{ funding.title }}" has successfully reached its goal.</p>
+        
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">{{ funding.title }}</h5>
+            <p class="card-text">{{ funding.description }}</p>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">Goal Amount: ${{ funding.goal_amount }}</li>
+              <li class="list-group-item">Total Funded: ${{ funding.current_amount }}</li>
+              <li class="list-group-item">Funding Period: {{ funding.start_date.strftime('%Y-%m-%d') }} to {{ funding.end_date.strftime('%Y-%m-%d') }}</li>
+            </ul>
+          </div>
+        </div>
+        
+        <p class="mt-4">Thank you to all the backers who supported this project. Your contributions have made this success possible.</p>
+        
+        <p>The funds will be transferred to the project creator's account, and they will begin working on bringing the project to life.</p>
+        
+        <p>Stay tuned for updates on the project's progress!</p>
+        
+        <a href="{{ url_for('funding.funding_list') }}" class="btn btn-primary mt-4">Back to Funding List</a>
+      </div>
+    </div>
+  </div>
+{% endblock %}

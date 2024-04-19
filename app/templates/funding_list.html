@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Funding List</h1>
+  
+  <div class="row">
+    {% for funding in fundings %}
+      <div class="col-md-4 mb-4">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">{{ funding.title }}  - {{ funding.creator.username }}</h4>
+            <p class="card-text">{{ funding.description|truncate(100) }}</p>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">Goal: ${{ funding.goal_amount }}</li>
+              <li class="list-group-item">Current: ${{ funding.current_amount }}</li>
+              <li class="list-group-item">End Date: {{ funding.end_date.strftime('%Y-%m-%d') }}</li>
+            </ul>
+            <a href="{{ url_for('funding.funding_detail', funding_id=funding.id) }}" class="btn btn-primary mt-3">View Details</a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}

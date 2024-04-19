@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}Product List{% endblock %}
+
+{% block content %}
+  <div class="container">
+    <h1>Product List</h1>
+    
+    <form action="{{ url_for('product.index') }}" method="GET">
+      <div class="form-group">
+        <label for="language">Language:</label>
+        <select name="language" id="language" class="form-control">
+          <option value="">All Languages</option>
+          {% for language in languages %}
+            <option value="{{ language.id }}" {% if selected_language == language.id %}selected{% endif %}>{{ language.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label for="usage">Usage:</label>
+        <select name="usage" id="usage" class="form-control">
+          <option value="">All Usages</option>
+          {% for usage in usages %}
+            <option value="{{ usage.id }}" {% if selected_usage == usage.id %}selected{% endif %}>{{ usage.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      
+      <button type="submit" class="btn btn-primary">Filter</button>
+    </form>
+    
+    <hr>
+    
+    <div class="row">
+      {% for product in products %}
+        <div class="col-md-4">
+          <div class="card mb-4">
+            <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.name }}">
+            <div class="card-body">
+              <h5 class="card-title">{{ product.name }}</h5>
+              <p class="card-text">{{ product.description }}</p>
+              <p class="card-text">Price: ${{ product.price }}</p>
+              <a href="{{ url_for('product.get_product', product_id=product.id) }}" class="btn btn-primary">View Details</a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    
+  </div>
+{% endblock %}
