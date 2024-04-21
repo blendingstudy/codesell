@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify, render_template, request, redirect, url_fo
 from flask_login import current_user
 from app import db
 from app.models.funding import Funding
+from app.models.order import Order
 from app.models.participation import Participation
 from app.forms import FundingCreateForm
 from datetime import datetime
@@ -84,9 +85,22 @@ def funding_participate(funding_id):
         return jsonify({'success': False, 'message': 'Invalid participation amount.'}), 400
     
     # 펀딩 참여 로직 구현
-    participation = Participation(user_id=current_user.id, funding_id=funding.id, amount=amount)
+    # 현재 사용자가 이미 참여한 participation이 있는지 확인
+    participation = Participation.query.filter_by(user_id=current_user.id, funding_id=funding.id).first()
+
+    if participation:
+        # 기존 participation 업데이트
+        participation.amount += amount
+        participation.created_at = datetime.utcnow()
+    else:
+        # 새로운 participation 생성
+        participation = Participation(user_id=current_user.id, funding_id=funding.id, amount=amount)
+        db.session.add(participation)
+
+        imp_uid = request.form.get('imp_uid')
+        merchant_uid = request.form.get('merchant_uid')
+
     funding.current_amount += amount
-    db.session.add(participation)
     db.session.commit()
     
     if funding.is_funded():

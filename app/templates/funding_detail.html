@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h1>{{ funding.title }}</h1>
+  <h1>{{ funding.title }} - {{ funding.creator.username }}</h1>
   
   <div class="row">
     <div class="col-md-8">
@@ -15,12 +15,25 @@
         <li class="list-group-item">Status: {{ funding.status.capitalize() }}</li>
       </ul>
       
-      {% if funding.is_ongoing() %}
+      <!-- {% if funding.is_ongoing() %}
         <form action="{{ url_for('funding.funding_participate', funding_id=funding.id) }}" method="post" class="participate-form">
           <div class="input-group mb-3">
-            <input type="number" name="amount" class="form-control" placeholder="Participation Amount" required>
+            <input type="number" name="totalPrice" class="form-control" placeholder="Participation Amount" required>
             <div class="input-group-append">
-              <button type="submit" class="btn btn-primary">Participate</button>
+              <button type="button" id="pay-button" class="btn btn-primary">Participate</button>
+            </div>
+          </div>
+        </form>
+        <script src="{{ url_for('static', filename='js/checkout.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/funding.js') }}"></script>
+      {% endif %} -->
+
+      {% if funding.is_ongoing() %}
+        <form id="participate-form" class="participate-form" data-funding-id="{{ funding.id }}">
+          <div class="input-group mb-3">
+            <input type="number" name="amount" id="amount" class="form-control" placeholder="Participation Amount" required>
+            <div class="input-group-append">
+              <button type="button" id="pay-button" class="btn btn-primary">Participate</button>
             </div>
           </div>
         </form>

@@ -8,7 +8,7 @@
       <div class="col-md-4 mb-4">
         <div class="card">
           <div class="card-body">
-            <h5 class="card-title">{{ funding.title }}</h5>
+            <h4 class="card-title">{{ funding.title }}  - {{ funding.creator.username }}</h4>
             <p class="card-text">{{ funding.description|truncate(100) }}</p>
             <ul class="list-group list-group-flush">
               <li class="list-group-item">Goal: ${{ funding.goal_amount }}</li>
