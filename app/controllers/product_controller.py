@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask_login import current_user, login_required
 from app.models.product import Product
 from app.models.category import Category
 from app import db
@@ -28,6 +29,7 @@ def index():
                            selected_language=language_id, selected_usage=usage_id)
 
 @product_bp.route('/create', methods=['GET', 'POST'])
+@login_required
 def create_product():
     form = ProductForm()
     language_categories = Category.query.filter_by(type='language').all()
@@ -47,7 +49,8 @@ def create_product():
             quantity=form.quantity.data,
             image_url=form.image_url.data,
             category_id=usage_id,
-            language_id=language_id
+            language_id=language_id,
+            seller_id=current_user.id
         )
         
         db.session.add(product)
@@ -64,8 +67,13 @@ def get_product(product_id):
     return render_template('product_detail.html', product=product)
 
 @product_bp.route('/<int:product_id>/update', methods=['GET', 'POST'])
+@login_required
 def update_product(product_id):
     product = Product.query.get_or_404(product_id)
+    
+    if product.seller_id != current_user.id:
+        flash('You are not authorized to update this product.', 'warning')
+        return redirect(url_for('product.get_product', product_id=product.id))
     
     language_categories = Category.query.filter_by(type='language').all()
     usage_categories = Category.query.filter_by(type='usage').all()
@@ -86,8 +94,14 @@ def update_product(product_id):
     return render_template('product_update.html', product=product, language_categories=language_categories, usage_categories=usage_categories)
 
 @product_bp.route('/<int:product_id>/delete', methods=['POST'])
+@login_required
 def delete_product(product_id):
     product = Product.query.get_or_404(product_id)
+    
+    if product.seller_id != current_user.id:
+        flash('You are not authorized to delete this product.', 'warning')
+        return redirect(url_for('product.get_product', product_id=product.id))
+    
     db.session.delete(product)
     db.session.commit()
     

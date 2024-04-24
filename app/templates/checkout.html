@@ -9,6 +9,9 @@
       <div class="col-md-8">
         <h3>Shipping Information</h3>
         <form action="{{ url_for('order.create_order') }}" method="POST">
+          {% for item in cart %}
+            <input type="hidden" class="item-checkbox" name="selected_items" value="{{ item.id }}">
+          {% endfor %}
           <div class="form-group">
             <label for="shipping_address">Shipping Address</label>
             <textarea class="form-control" id="shipping_address" name="shipping_address" rows="3" required></textarea>
@@ -16,7 +19,7 @@
           <button type="button" id="pay-button" class="btn btn-primary">결제하기</button>
         </form>
         <script>
-          var totalPrice = '{{ cart.get_total_price()|int }}';
+          var totalPrice = '{{ total_amount|int }}';
           var userEmail = '{{ current_user.email }}';
           var userName = '{{ current_user.username }}';
         </script>
@@ -26,7 +29,7 @@
         <h3>Order Summary</h3>
         <table class="table">
           <tbody>
-            {% for item in cart.items %}
+            {% for item in cart %}
               <tr>
                 <td>{{ item.product.name }}</td>
                 <td>{{ item.quantity }}</td>
@@ -37,7 +40,7 @@
           <tfoot>
             <tr>
               <th>Total</th>
-              <th colspan="2">${{ cart.get_total_price() }}</th>
+              <th colspan="2">${{ total_amount }}</th>
             </tr>
           </tfoot>
         </table>

@@ -1,3 +1,4 @@
+import json
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, current_user
 from app.models.order import Order, OrderItem
@@ -6,37 +7,59 @@ from app import db
 
 order_bp = Blueprint('order', __name__, url_prefix='/orders')
 
-@order_bp.route('/create', methods=['GET', 'POST'])
+@order_bp.route('/checkout', methods=['POST'])
 @login_required
-def create_order():
-    cart = Cart.query.filter_by(user_id=current_user.id).first()
-    if not cart or not cart.items:
-        flash('Your cart is empty. Please add items to the cart before creating an order.', 'error')
+def checkout():
+    selected_items = request.form.getlist('selected_items')
+    if not selected_items:
+        flash('No items selected for checkout.', 'warning')
         return redirect(url_for('cart.cart_detail'))
 
-    if request.method == 'POST':
-        shipping_address = request.form['shipping_address']
-        imp_uid = request.form.get('imp_uid')
-        merchant_uid = request.form.get('merchant_uid')
+    cart_items = CartItem.query.filter(CartItem.id.in_(selected_items)).all()
+    print('cart_items')
+    print(cart_items)
+    if not cart_items:
+        flash('Invalid cart items selected.', 'danger')
+        return redirect(url_for('cart.cart_detail'))
 
-        order = Order(user_id=current_user.id, total_amount=cart.get_total_price(), shipping_address=shipping_address)
-        order.status = 'paid'  # 결제 완료 상태로 설정
-        db.session.add(order)
-        db.session.commit()
+    total_amount = sum(item.product.price * item.quantity for item in cart_items)
 
-        for cart_item in cart.items:
-            order_item = OrderItem(order_id=order.id, product_id=cart_item.product_id, quantity=cart_item.quantity, price=cart_item.product.price)
-            db.session.add(order_item)
-        db.session.commit()
+    return render_template('checkout.html', cart=cart_items, total_amount=total_amount)
 
-        cart.clear()
-        flash('Order created successfully.', 'success')
-        jsonify({'order_id': order.id})
-        print(order.id)
-        #return redirect(url_for('order.order_detail', order_id=order.id))
-        return jsonify({'order_id': order.id})
+@order_bp.route('/create', methods=['POST'])
+@login_required
+def create_order():
+    shipping_address = request.form['shipping_address']
+    imp_uid = request.form.get('imp_uid')
+    merchant_uid = request.form.get('merchant_uid')
 
-    return render_template('checkout.html', cart=cart)
+    # 선택된 상품 정보 가져오기
+    selected_items_str = request.form.get('selected_items')
+    selected_items = json.loads(selected_items_str) if selected_items_str else []
+    #selected_items = request.form.getlist('selected_items')
+    cart_items = CartItem.query.filter(CartItem.id.in_(selected_items)).all()
+    total_amount = request.form.get('total_amount')
+
+    print(selected_items)
+    order = Order(user_id=current_user.id, total_amount=total_amount, shipping_address=shipping_address)
+    order.status = 'paid'  # 결제 완료 상태로 설정
+    db.session.add(order)
+    db.session.commit()
+
+    for item in cart_items:
+        order_item = OrderItem(order_id=order.id, product_id=item.product_id, quantity=item.quantity, price=item.product.price)
+        db.session.add(order_item)
+        # 재고 변경 로직 추가
+
+    db.session.commit()
+
+    # 장바구니에서 주문한 아이템 제거
+    for item in cart_items:
+        db.session.delete(item)
+    db.session.commit()
+
+    flash('Order created successfully.', 'success')
+    return jsonify({'order_id': order.id})
 
 @order_bp.route('/<int:order_id>')
 @login_required

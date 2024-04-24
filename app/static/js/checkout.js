@@ -21,13 +21,19 @@ $(document).ready(function() {
           
           // 서버로 결제 정보와 배송 정보 전송
           var shippingAddress = $('#shipping_address').val();
+          var selected_items=[];
+          $('.item-checkbox').each(function() {
+            selected_items.push($(this).val());
+          });
           $.ajax({
             url: '/orders/create',
             method: 'POST',
             data: {
               imp_uid: rsp.imp_uid,
               merchant_uid: rsp.merchant_uid,
-              shipping_address: shippingAddress
+              shipping_address: shippingAddress,
+              selected_items: JSON.stringify(selected_items),
+              total_amount: totalPrice
             },
             success: function(data) {
               // 주문 완료 처리
