@@ -29,7 +29,7 @@ def edit_profile():
 @login_required
 def my_products():
     products = Product.query.filter_by(seller_id=current_user.id).all()
-    return render_template('my_products.html', products=products)
+    return render_template('myproducts.html', products=products)
 
 @mypage_bp.route('/manage_product/<int:product_id>', methods=['GET', 'POST'])
 @login_required

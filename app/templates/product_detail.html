@@ -22,7 +22,7 @@
         <p>Quantity: {{ product.quantity }}</p>
         <p>Language: {{ product.language.name }}</p>
         <p>Usage: {{ product.category.name }}</p>
-        <p>Seller: <a href="{{ url_for('user.profile', user_id=product.seller.id) }}">{{ product.seller.username }}</a></p>
+        <p>Seller: {{ product.seller.username }}</a></p> <!-- 유저프로필 연결링크 추가 -->
         <form action="{{ url_for('cart.add_to_cart', product_id=product.id) }}" method="POST">
           <input type="hidden" name="quantity" value="1">
           <button type="submit" class="btn btn-primary">Add to Cart</button>

@@ -52,7 +52,10 @@ def login():
             flash('Login successful.', 'success')
             next_page = request.args.get('next')
             if not next_page or urlparse(next_page).netloc != '':
-                next_page = url_for('index')
+                if user.is_admin:
+                    next_page = url_for('admin.index')
+                else:
+                    next_page = url_for('index')
             return redirect(next_page)
         else:
             flash('Invalid email or password.', 'error')
