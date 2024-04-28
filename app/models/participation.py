@@ -5,7 +5,7 @@ from datetime import datetime
 class Participation(db.Model):
     __tablename__ = 'participations'
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='SET NULL'))
     funding_id = db.Column(db.Integer, db.ForeignKey('fundings.id'), nullable=False)  # 외래 키 제약 조건 추가
     amount = db.Column(db.Integer, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
