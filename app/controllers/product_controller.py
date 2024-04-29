@@ -12,7 +12,7 @@ def index():
     language_id = request.args.get('language')
     usage_id = request.args.get('usage')
     
-    products = Product.query
+    products = Product.query.filter_by(is_active=True)
     
     if language_id:
         products = products.filter_by(language_id=language_id)
@@ -63,13 +63,13 @@ def create_product():
 
 @product_bp.route('/<int:product_id>')
 def get_product(product_id):
-    product = Product.query.get_or_404(product_id)
+    product = Product.query.filter_by(id=product_id, is_active=True).first_or_404()
     return render_template('product_detail.html', product=product)
 
 @product_bp.route('/<int:product_id>/update', methods=['GET', 'POST'])
 @login_required
 def update_product(product_id):
-    product = Product.query.get_or_404(product_id)
+    product = Product.query.filter_by(id=product_id, is_active=True).first_or_404()
     
     if product.seller_id != current_user.id:
         flash('You are not authorized to update this product.', 'warning')
@@ -96,13 +96,13 @@ def update_product(product_id):
 @product_bp.route('/<int:product_id>/delete', methods=['POST'])
 @login_required
 def delete_product(product_id):
-    product = Product.query.get_or_404(product_id)
+    product = Product.query.filter_by(id=product_id, is_active=True).first_or_404()
     
     if product.seller_id != current_user.id:
         flash('You are not authorized to delete this product.', 'warning')
         return redirect(url_for('product.get_product', product_id=product.id))
     
-    db.session.delete(product)
+    product.is_active = False
     db.session.commit()
     
     flash('Product deleted successfully.', 'success')

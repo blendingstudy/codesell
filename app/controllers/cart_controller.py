@@ -15,8 +15,9 @@ def cart_detail():
         db.session.add(cart)
         db.session.commit()
     cart_items = CartItem.query.filter_by(user_id=current_user.id).all()
+    discontinued_items = [item for item in cart_items if not item.product.is_active]
     total_price = cart.get_total_price()
-    return render_template('cart.html', cart_items=cart_items, total_price=total_price)
+    return render_template('cart.html', cart_items=cart_items, total_price=total_price, discontinued_items=discontinued_items)
 
 @cart_bp.route('/add/<int:product_id>', methods=['POST'])
 @login_required

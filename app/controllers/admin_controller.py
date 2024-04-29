@@ -1,5 +1,6 @@
 from flask import render_template, redirect, url_for, flash, request, Blueprint
 from flask_login import login_required, current_user
+from app.models.category import Category
 from app.models.user import User
 from app.models.product import Product
 from app.models.order import Order
@@ -30,7 +31,7 @@ def product_list():
     if not current_user.is_admin:
         flash('Access denied. Admin privileges required.', 'danger')
         return redirect(url_for('main.index'))
-    products = Product.query.all()
+    products = Product.query.filter_by(is_active=True)
     return render_template('admin_product_list.html', products=products)
 
 @admin_bp.route('/orders')
@@ -73,22 +74,27 @@ def delete_user(user_id):
 @admin_bp.route('/products/<int:product_id>/edit', methods=['GET', 'POST'])
 @login_required
 def edit_product(product_id):
-   if not current_user.is_admin:
-       flash('Access denied. Admin privileges required.', 'danger')
-       return redirect(url_for('main.index'))
-   product = Product.query.get_or_404(product_id)
-   if request.method == 'POST':
-       product.name = request.form['name']
-       product.description = request.form['description']
-       product.price = request.form['price']
-       product.quantity = request.form['quantity']
-       product.image_url = request.form['image_url']
-       product.category_id = request.form['category_id']
-       product.language_id = request.form['language_id']
-       db.session.commit()
-       flash('Product updated successfully.', 'success')
-       return redirect(url_for('admin.product_list'))
-   return render_template('edit_product.html', product=product)
+    if not current_user.is_admin:
+        flash('Access denied. Admin privileges required.', 'danger')
+        return redirect(url_for('main.index'))
+    product = Product.query.get_or_404(product_id)
+    language_categories = Category.query.filter_by(type='language').all()
+    usage_categories = Category.query.filter_by(type='usage').all()
+    users = User.query.all()
+    
+    if request.method == 'POST':
+        product.name = request.form['name']
+        product.description = request.form['description']
+        product.price = request.form['price']
+        product.quantity = request.form['quantity']
+        product.image_url = request.form['image_url']
+        product.category_id = request.form['category_id']
+        product.language_id = request.form['language_id']
+        product.seller_id = request.form['seller_id']
+        db.session.commit()
+        flash('Product updated successfully.', 'success')
+        return redirect(url_for('admin.product_list'))
+    return render_template('edit_product.html', product=product, language_categories=language_categories, usage_categories=usage_categories, users=users)
 
 @admin_bp.route('/products/<int:product_id>/delete', methods=['POST'])
 @login_required
@@ -97,7 +103,7 @@ def delete_product(product_id):
        flash('Access denied. Admin privileges required.', 'danger')
        return redirect(url_for('main.index'))
    product = Product.query.get_or_404(product_id)
-   db.session.delete(product)
+   product.is_active = False
    db.session.commit()
    flash('Product deleted successfully.', 'success')
    return redirect(url_for('admin.product_list'))

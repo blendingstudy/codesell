@@ -16,6 +16,7 @@ class Product(BaseModel):
     language = db.relationship('Category', backref=db.backref('language_products', lazy=True), foreign_keys=[language_id])
     seller_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     seller = db.relationship('User', backref=db.backref('products', lazy=True))
+    is_active = db.Column(db.Boolean, default=True)
 
     def __init__(self, name, description, price, quantity, image_url, category_id, language_id, seller_id):
         self.name = name
