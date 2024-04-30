@@ -1,5 +1,7 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+import os
+from flask import Blueprint, render_template, request, redirect, send_file, url_for, flash
 from flask_login import current_user, login_required
+from app.models.order import Order
 from app.models.product import Product
 from app.models.category import Category
 from app import db
@@ -41,13 +43,18 @@ def create_product():
     if form.validate_on_submit():
         language_id = request.form['language']
         usage_id = request.form['usage']
+        code_file = request.files['code_file']
+        
+        if code_file:
+            filename = code_file.filename
+            code_file_path = os.path.join('uploads', filename)
+            code_file.save(code_file_path)
         
         product = Product(
             name=form.name.data,
             description=form.description.data,
             price=form.price.data,
-            quantity=form.quantity.data,
-            image_url=form.image_url.data,
+            code_file=code_file_path,
             category_id=usage_id,
             language_id=language_id,
             seller_id=current_user.id
@@ -82,8 +89,14 @@ def update_product(product_id):
         product.name = request.form['name']
         product.description = request.form['description']
         product.price = request.form['price']
-        product.quantity = request.form['quantity']
-        product.image_url = request.form['image_url']
+        code_file = request.files['code_file']
+        
+        if code_file:
+            filename = code_file.filename
+            code_file_path = os.path.join('uploads', filename)
+            code_file.save(code_file_path)
+            product.code_file = code_file_path
+        
         product.category_id = request.form['usage']
         
         db.session.commit()
@@ -107,3 +120,21 @@ def delete_product(product_id):
     
     flash('Product deleted successfully.', 'success')
     return redirect(url_for('product.index'))
+
+@product_bp.route('/<int:product_id>/download')
+@login_required
+def download_code(product_id):
+    product = Product.query.filter_by(id=product_id, is_active=True).first_or_404()
+    
+    # 구매 여부 확인
+    order = Order.query.filter_by(user_id=current_user.id, product_id=product.id, status='completed').first()
+    
+    if not order:
+        flash('You have not purchased this product.', 'warning')
+        return redirect(url_for('product.get_product', product_id=product.id))
+    
+    try:
+        return send_file(product.code_file, as_attachment=True)
+    except FileNotFoundError:
+        flash('Code file not found.', 'error')
+        return redirect(url_for('product.get_product', product_id=product.id))

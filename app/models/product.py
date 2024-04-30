@@ -8,8 +8,7 @@ class Product(BaseModel):
     name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text)
     price = db.Column(db.Float, nullable=False)
-    quantity = db.Column(db.Integer, nullable=False)
-    image_url = db.Column(db.String(200))
+    code_file = db.Column(db.String(200), nullable=False)
     category_id = db.Column(db.Integer, db.ForeignKey('categories.id'))
     category = db.relationship('Category', backref=db.backref('products', lazy=True), foreign_keys=[category_id])
     language_id = db.Column(db.Integer, db.ForeignKey('categories.id'), nullable=False)
@@ -18,12 +17,11 @@ class Product(BaseModel):
     seller = db.relationship('User', backref=db.backref('products', lazy=True))
     is_active = db.Column(db.Boolean, default=True)
 
-    def __init__(self, name, description, price, quantity, image_url, category_id, language_id, seller_id):
+    def __init__(self, name, description, price, code_file, category_id, language_id, seller_id):
         self.name = name
         self.description = description
         self.price = price
-        self.quantity = quantity
-        self.image_url = image_url
+        self.code_file = code_file
         self.category_id = category_id
         self.language_id = language_id
         self.seller_id = seller_id

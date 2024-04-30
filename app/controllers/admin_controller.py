@@ -30,7 +30,7 @@ def user_list():
 def product_list():
     if not current_user.is_admin:
         flash('Access denied. Admin privileges required.', 'danger')
-        return redirect(url_for('main.index'))
+        return redirect(url_for('index'))
     products = Product.query.filter_by(is_active=True)
     return render_template('admin_product_list.html', products=products)
 
@@ -39,7 +39,7 @@ def product_list():
 def order_list():
     if not current_user.is_admin:
         flash('Access denied. Admin privileges required.', 'danger')
-        return redirect(url_for('main.index'))
+        return redirect(url_for('index'))
     orders = Order.query.all()
     return render_template('order_list.html', orders=orders)
 
@@ -48,7 +48,7 @@ def order_list():
 def edit_user(user_id):
     if not current_user.is_admin:
         flash('Access denied. Admin privileges required.', 'danger')
-        return redirect(url_for('main.index'))
+        return redirect(url_for('index'))
     user = User.query.get_or_404(user_id)
     if request.method == 'POST':
         user.username = request.form['username']
@@ -64,7 +64,7 @@ def edit_user(user_id):
 def delete_user(user_id):
     if not current_user.is_admin:
         flash('Access denied. Admin privileges required.', 'danger')
-        return redirect(url_for('main.index'))
+        return redirect(url_for('index'))
     user = User.query.get_or_404(user_id)
     db.session.delete(user)
     db.session.commit()
@@ -76,7 +76,7 @@ def delete_user(user_id):
 def edit_product(product_id):
     if not current_user.is_admin:
         flash('Access denied. Admin privileges required.', 'danger')
-        return redirect(url_for('main.index'))
+        return redirect(url_for('index'))
     product = Product.query.get_or_404(product_id)
     language_categories = Category.query.filter_by(type='language').all()
     usage_categories = Category.query.filter_by(type='usage').all()
@@ -101,7 +101,7 @@ def edit_product(product_id):
 def delete_product(product_id):
    if not current_user.is_admin:
        flash('Access denied. Admin privileges required.', 'danger')
-       return redirect(url_for('main.index'))
+       return redirect(url_for('index'))
    product = Product.query.get_or_404(product_id)
    product.is_active = False
    db.session.commit()

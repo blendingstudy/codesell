@@ -65,13 +65,15 @@ def create_order():
 @login_required
 def order_detail(order_id):
     order = Order.query.get_or_404(order_id)
-    if order.user_id != current_user.id:
+    if order.user_id != current_user.id and current_user.is_admin is False:
         flash('You do not have permission to view this order.', 'error')
-        return redirect(url_for('main.index'))
+        return redirect(url_for('index'))
     return render_template('order_detail.html', order=order)
 
 @order_bp.route('/')
 @login_required
 def order_list():
+    if current_user.is_admin:
+        return redirect(url_for('admin.order_list'))
     orders = Order.query.filter_by(user_id=current_user.id).all()
     return render_template('order_list.html', orders=orders)
