@@ -21,6 +21,14 @@ class Order(BaseModel):
 
     def __repr__(self):
         return f'<Order {self.id}>'
+    
+    @classmethod
+    def has_purchased(cls, user_id, product):
+        return cls.query.join(OrderItem).filter(
+            cls.user_id == user_id,
+            cls.status == 'paid',
+            OrderItem.product_id == product.id
+        ).scalar() is not None
 
 class OrderItem(BaseModel):
     __tablename__ = 'order_items'

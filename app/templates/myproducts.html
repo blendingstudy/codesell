@@ -21,7 +21,6 @@
           <th>ID</th>
           <th>Name</th>
           <th>Price</th>
-          <th>Quantity</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -31,7 +30,6 @@
             <td>{{ product.id }}</td>
             <td>{{ product.name }}</td>
             <td>${{ product.price }}</td>
-            <td>{{ product.quantity }}</td>
             <td>
               <a href="{{ url_for('mypage.manage_product', product_id=product.id) }}" class="btn btn-primary btn-sm">Manage</a>
               <form action="{{ url_for('mypage.delete_product', product_id=product.id) }}" method="POST" class="d-inline">
