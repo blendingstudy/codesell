@@ -13,7 +13,7 @@ class Product(BaseModel):
     category = db.relationship('Category', backref=db.backref('products', lazy=True), foreign_keys=[category_id])
     language_id = db.Column(db.Integer, db.ForeignKey('categories.id'), nullable=False)
     language = db.relationship('Category', backref=db.backref('language_products', lazy=True), foreign_keys=[language_id])
-    seller_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    seller_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='SET NULL'), nullable=True)
     seller = db.relationship('User', backref=db.backref('products', lazy=True))
     is_active = db.Column(db.Boolean, default=True)
 

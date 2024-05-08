@@ -1,3 +1,4 @@
+from typing import Optional
 from flask_wtf import FlaskForm
 from wtforms import FileField, StringField, PasswordField, SubmitField, TextAreaField, FloatField, IntegerField, SelectField, DateField
 from wtforms.validators import DataRequired, Email, EqualTo, NumberRange
@@ -38,3 +39,11 @@ class FundingUpdateForm(FlaskForm):
     goal_amount = IntegerField('Goal Amount', validators=[DataRequired(), NumberRange(min=1)])
     end_date = DateField('End Date', validators=[DataRequired()])
     submit = SubmitField('Update Funding')
+
+class SearchForm(FlaskForm):
+    keyword = StringField('Keyword', validators=[Optional()])
+    min_price = FloatField('Minimum Price', validators=[Optional(), NumberRange(min=0)])
+    max_price = FloatField('Maximum Price', validators=[Optional(), NumberRange(min=0)])
+    language = SelectField('Language', coerce=int, validators=[Optional()])
+    usage = SelectField('Usage', coerce=int, validators=[Optional()])
+    submit = SubmitField('Search')

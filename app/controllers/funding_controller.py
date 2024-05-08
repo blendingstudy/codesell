@@ -11,7 +11,7 @@ funding_bp = Blueprint('funding', __name__)
 
 @funding_bp.route('/fundings')
 def funding_list():
-    fundings = Funding.query.all()
+    fundings = Funding.query.filter_by(is_active=True)
     return render_template('funding_list.html', fundings=fundings)
 
 @funding_bp.route('/fundings/<int:funding_id>')

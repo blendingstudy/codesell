@@ -1,9 +1,11 @@
 from flask import render_template, redirect, url_for, flash, request, Blueprint
 from flask_login import login_required, current_user
+from app.models.cart import Cart, CartItem
 from app.models.category import Category
+from app.models.funding import Funding
 from app.models.user import User
 from app.models.product import Product
-from app.models.order import Order
+from app.models.order import Order, OrderItem
 from app import db
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
@@ -66,6 +68,22 @@ def delete_user(user_id):
         flash('Access denied. Admin privileges required.', 'danger')
         return redirect(url_for('index'))
     user = User.query.get_or_404(user_id)
+    # 사용자의 장바구니 삭제
+    CartItem.query.filter_by(user_id=user.id).delete()
+    Cart.query.filter_by(user_id=user.id).delete()
+    
+    # 사용자의 주문 삭제
+    for order in user.orders:
+        OrderItem.query.filter_by(order_id=order.id).delete()
+        db.session.delete(order)
+
+    #후원/상품의 판매자/피후원자 아이디가 NULL일 경우 판매/후원중지로 수정 필요
+    for product in user.products:
+        product.is_active = False      
+
+    for funding in user.fundings:
+        funding.is_active = False
+
     db.session.delete(user)
     db.session.commit()
     flash('User deleted successfully.', 'success')

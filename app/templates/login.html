@@ -16,6 +16,8 @@
         {{ form.submit(class='btn btn-primary') }}
       </form>
     <hr>
+    <a href="{{ url_for('auth.kakao_login') }}">Login with Kakao</a>
+    <a href="{{ url_for('auth.naver_login') }}">Login with Naver</a>
     <p>Don't have an account? <a href="{{ url_for('auth.register') }}">Register here</a>.</p>
   </div>
 {% endblock %}
