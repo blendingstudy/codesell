@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 
-{% block title %}Product List{% endblock %}
+{% block title %}Search Results{% endblock %}
 
 {% block content %}
   <div class="container">
-    <h1>Product List</h1>
+    <h1>Search Results</h1>
     
     <form action="{{ url_for('product.search') }}" method="GET" class="mb-4">
       <div class="form-group">
@@ -45,24 +45,28 @@
     
     <hr>
     
-    <div class="row">
-      {% for product in products %}
-        <div class="col-md-4">
-          <div class="card mb-4">
-            <div class="card-body">
-              <h5 class="card-title">{{ product.name }}</h5>
-              <p class="card-text">{{ product.description }}</p>
-              <p class="card-text">Price: ${{ product.price }}</p>
-              <p class="card-text">Seller: {{ product.seller.username }}</p>
-              <a href="{{ url_for('product.get_product', product_id=product.id) }}" class="btn btn-primary">View Details</a>
+    {% if products %}
+      <p>Found {{ products|length }} product(s).</p>
+      
+      <div class="row">
+        {% for product in products %}
+          <div class="col-md-4">
+            <div class="card mb-4">
+              <div class="card-body">
+                <h5 class="card-title">{{ product.name }}</h5>
+                <p class="card-text">{{ product.description }}</p>
+                <p class="card-text">Price: ${{ product.price }}</p>
+                <p class="card-text">Seller: {{ product.seller.username }}</p>
+                <a href="{{ url_for('product.get_product', product_id=product.id) }}" class="btn btn-primary">View Details</a>
+              </div>
             </div>
           </div>
-        </div>
-      {% endfor %}
-    </div>
-    
-    {% if products|length == 0 %}
+        {% endfor %}
+      </div>
+    {% else %}
       <p>No products found.</p>
     {% endif %}
+    
+    <a href="{{ url_for('product.index') }}" class="btn btn-secondary">Back to Product List</a>
   </div>
 {% endblock %}

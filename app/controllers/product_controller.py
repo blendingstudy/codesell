@@ -5,30 +5,42 @@ from app.models.order import Order
 from app.models.product import Product
 from app.models.category import Category
 from app import db
-from app.forms import ProductForm
+from app.forms import ProductForm, SearchForm
 
 product_bp = Blueprint('product', __name__, url_prefix='/products')
 
-@product_bp.route('/')
+@product_bp.route('/', methods=['GET', 'POST'])
 def index():
-    language_id = request.args.get('language')
-    usage_id = request.args.get('usage')
-    
+    search_form = SearchForm()
+    language_categories = Category.query.filter_by(type='language').all()
+    usage_categories = Category.query.filter_by(type='usage').all()
+
+    search_form.language.choices = [(0, 'All Languages')] + [(category.id, category.name) for category in language_categories]
+    search_form.usage.choices = [(0, 'All Usages')] + [(category.id, category.name) for category in usage_categories]
+
     products = Product.query.filter_by(is_active=True)
-    
-    if language_id:
-        products = products.filter_by(language_id=language_id)
-    
-    if usage_id:
-        products = products.filter_by(category_id=usage_id)
-    
+
+    if search_form.validate_on_submit():
+        keyword = search_form.keyword.data
+        min_price = search_form.min_price.data
+        max_price = search_form.max_price.data
+        language_id = search_form.language.data
+        usage_id = search_form.usage.data
+
+        if keyword:
+            products = products.filter(Product.name.ilike(f'%{keyword}%'))
+        if min_price:
+            products = products.filter(Product.price >= min_price)
+        if max_price:
+            products = products.filter(Product.price <= max_price)
+        if language_id:
+            products = products.filter_by(language_id=language_id)
+        if usage_id:
+            products = products.filter_by(category_id=usage_id)
+
     products = products.all()
-    
-    languages = Category.query.filter_by(type='language').all()
-    usages = Category.query.filter_by(type='usage').all()
-    
-    return render_template('product_list.html', products=products, languages=languages, usages=usages,
-                           selected_language=language_id, selected_usage=usage_id)
+
+    return render_template('product_list.html', products=products, search_form=search_form)
 
 @product_bp.route('/create', methods=['GET', 'POST'])
 @login_required
@@ -136,3 +148,90 @@ def download_code(product_id):
     except FileNotFoundError:
         flash('Code file not found.', 'error')
         return redirect(url_for('product.get_product', product_id=product.id))
+    
+""" @product_bp.route('/search')
+def search():
+    search_form = SearchForm()
+    language_categories = Category.query.filter_by(type='language').all()
+    usage_categories = Category.query.filter_by(type='usage').all()
+
+    search_form.language.choices = [(0, 'All Languages')] + [(category.id, category.name) for category in language_categories]
+    search_form.usage.choices = [(0, 'All Usages')] + [(category.id, category.name) for category in usage_categories]
+
+    keyword = request.args.get('keyword')
+    min_price = request.args.get('min_price')
+    max_price = request.args.get('max_price')
+    language_id = request.args.get('language')
+    usage_id = request.args.get('usage')
+
+    products = Product.query.filter_by(is_active=True)
+
+    conditions = []
+
+    if keyword:
+        conditions.append(Product.name.ilike(f'%{keyword}%'))
+
+    category_conditions = []
+    if language_id and usage_id:
+        category_conditions.append(db.and_(Product.language_id == language_id, Product.category_id == usage_id))
+    elif language_id:
+        category_conditions.append(db.or_(Product.language_id == language_id))
+    elif usage_id:
+        category_conditions.append(db.or_(Product.category_id == usage_id))
+    conditions.append(db.and_(*category_conditions))
+
+    if min_price or max_price:
+        price_conditions = []
+        if min_price:
+            price_conditions.append(db.and_(Product.price >= min_price))
+        if max_price:
+            price_conditions.append(db.and_(Product.price <= max_price))
+        conditions.append(db.and_(*price_conditions))
+
+    if conditions:
+        products = products.filter(db.or_(*conditions))
+
+    print(conditions)
+    products = products.all()
+
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return render_template('search_results_partial.html', products=products)
+
+    return render_template('search_results.html', products=products, search_form=search_form) """
+
+@product_bp.route('/search')
+def search():
+    search_form = SearchForm()
+    language_categories = Category.query.filter_by(type='language').all()
+    usage_categories = Category.query.filter_by(type='usage').all()
+
+    search_form.language.choices = [(0, 'All Languages')] + [(category.id, category.name) for category in language_categories]
+    search_form.usage.choices = [(0, 'All Usages')] + [(category.id, category.name) for category in usage_categories]
+
+    keyword = request.args.get('keyword')
+    min_price = request.args.get('min_price')
+    max_price = request.args.get('max_price')
+    language_id = request.args.get('language')
+    usage_id = request.args.get('usage')
+
+    products = Product.query.filter_by(is_active=True)
+
+    if keyword:
+        products = products.filter(Product.name.ilike(f'%{keyword}%'))
+        print(keyword)
+    if min_price:
+        products = products.filter(Product.price >= min_price)
+        print(min_price)
+    if max_price:
+        products = products.filter(Product.price <= max_price)
+        print(max_price)
+    if language_id != '0':
+        products = products.filter_by(language_id=language_id)
+        print(language_id)
+    if usage_id != '0':
+        products = products.filter_by(category_id=usage_id)
+        print(usage_id)
+
+    products = products.all()
+
+    return render_template('search_results.html', products=products, search_form=search_form)
