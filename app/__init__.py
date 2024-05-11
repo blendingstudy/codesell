@@ -30,6 +30,7 @@ def create_app():
    from app.models.cart import Cart
    from app.models.order import Order
    from app.models.funding import Funding
+   from app.models.review import Review
 
    from app.controllers.auth_controller import auth_bp
    from app.controllers.product_controller import product_bp
@@ -38,6 +39,7 @@ def create_app():
    from app.controllers.funding_controller import funding_bp
    from app.controllers.mypage_controller import mypage_bp
    from app.controllers.admin_controller import admin_bp
+   from app.controllers.review_controller import review_bp
 
    app.register_blueprint(auth_bp)
    app.register_blueprint(product_bp)
@@ -46,5 +48,6 @@ def create_app():
    app.register_blueprint(funding_bp)
    app.register_blueprint(mypage_bp)
    app.register_blueprint(admin_bp)
+   app.register_blueprint(review_bp)
 
    return app

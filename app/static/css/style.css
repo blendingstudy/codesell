@@ -222,3 +222,69 @@ footer {
   background-color: #f2dede;
   border-color: #ebccd1;
 }
+
+/* Review styles */
+.review-list {
+  margin-top: 20px;
+}
+
+.review-card {
+  border: 1px solid #ccc;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+}
+
+.review-card h5 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.review-card p {
+  margin-bottom: 10px;
+}
+
+.review-card .rating {
+  font-weight: bold;
+  color: #f4d03f;
+}
+
+.review-card .comment {
+  margin-bottom: 10px;
+}
+
+.review-card .meta {
+  font-size: 14px;
+  color: #777;
+}
+
+.review-form {
+  margin-top: 20px;
+}
+
+.review-form .form-group {
+  margin-bottom: 10px;
+}
+
+.review-form label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.review-form select,
+.review-form textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.review-form button {
+  padding: 10px 20px;
+  background-color: #333;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}

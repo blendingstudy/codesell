@@ -1,6 +1,8 @@
 from app import db
 from app.models import BaseModel
+from app.models.review import Review
 from app.models.user import User
+from sqlalchemy import func
 
 class Product(BaseModel):
     __tablename__ = 'products'
@@ -28,3 +30,7 @@ class Product(BaseModel):
 
     def __repr__(self):
         return f'<Product {self.name}>'
+    
+    def get_average_rating(self):
+        avg_rating = db.session.query(func.avg(Review.rating)).filter_by(product_id=self.id).scalar()
+        return round(avg_rating, 2) if avg_rating else 0

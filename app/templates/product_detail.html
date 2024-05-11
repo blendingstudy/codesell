@@ -18,7 +18,8 @@
         <p>Price: ${{ product.price }}</p>
         <p>Language: {{ product.language.name }}</p>
         <p>Usage: {{ product.category.name }}</p>
-        <p>Seller: {{ product.seller.username }}</a></p>
+        <p>Seller: {{ product.seller.username }}</p>
+        <p>Average Rating: {{ average_rating }}</p>
         <a href="{{ url_for('product.download_code', product_id=product.id) }}" class="btn btn-primary">Download Code</a>
         <form action="{{ url_for('cart.add_to_cart', product_id=product.id) }}" method="POST" class="d-inline">
           <input type="hidden" name="quantity" value="1">
@@ -46,5 +47,31 @@
         </div>
       </div>
     {% endif %}
+
+    <hr>
+
+    <div class="row">
+      <div class="col-md-12">
+        <h3>Reviews</h3>
+        {% if current_user.is_authenticated %}
+          <a href="{{ url_for('review.create_review', product_id=product.id) }}" class="btn btn-primary mb-3">Write a Review</a>
+        {% endif %}
+        {% for review in reviews %}
+          <div class="card mb-3">
+            <div class="card-body">
+              <h5 class="card-title">Rating: {{ review.rating }}</h5>
+              <p class="card-text">{{ review.comment }}</p>
+              <p class="card-text"><small class="text-muted">By {{ review.user.username }} on {{ review.created_at.strftime('%Y-%m-%d') }}</small></p>
+              {% if current_user.is_authenticated and current_user.id == review.user_id %}
+                <a href="{{ url_for('review.edit_review', review_id=review.id) }}" class="btn btn-secondary btn-sm">Edit</a>
+                <form action="{{ url_for('review.delete_review', review_id=review.id) }}" method="POST" class="d-inline">
+                  <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this review?')">Delete</button>
+                </form>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
   </div>
 {% endblock %}

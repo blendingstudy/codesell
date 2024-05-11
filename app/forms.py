@@ -46,3 +46,8 @@ class SearchForm(FlaskForm):
     language = SelectField('Language', coerce=int, validators=[Optional()])
     usage = SelectField('Usage', coerce=int, validators=[Optional()])
     submit = SubmitField('Search')
+
+class ReviewForm(FlaskForm):
+    rating = SelectField('Rating', coerce=int, choices=[(i, str(i)) for i in range(1, 6)], validators=[DataRequired()])
+    comment = TextAreaField('Comment')
+    submit = SubmitField('Submit Review')

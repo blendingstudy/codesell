@@ -6,6 +6,7 @@ from app.models.product import Product
 from app.models.category import Category
 from app import db
 from app.forms import ProductForm, SearchForm
+from app.models.review import Review
 
 product_bp = Blueprint('product', __name__, url_prefix='/products')
 
@@ -83,7 +84,9 @@ def create_product():
 @product_bp.route('/<int:product_id>')
 def get_product(product_id):
     product = Product.query.filter_by(id=product_id, is_active=True).first_or_404()
-    return render_template('product_detail.html', product=product)
+    reviews = Review.query.filter_by(product_id=product_id).all()  # 상품의 리뷰 목록 조회
+    average_rating = product.get_average_rating()  # 상품의 평균 평점 계산
+    return render_template('product_detail.html', product=product, reviews=reviews, average_rating=average_rating)
 
 @product_bp.route('/<int:product_id>/update', methods=['GET', 'POST'])
 @login_required
@@ -148,56 +151,6 @@ def download_code(product_id):
     except FileNotFoundError:
         flash('Code file not found.', 'error')
         return redirect(url_for('product.get_product', product_id=product.id))
-    
-""" @product_bp.route('/search')
-def search():
-    search_form = SearchForm()
-    language_categories = Category.query.filter_by(type='language').all()
-    usage_categories = Category.query.filter_by(type='usage').all()
-
-    search_form.language.choices = [(0, 'All Languages')] + [(category.id, category.name) for category in language_categories]
-    search_form.usage.choices = [(0, 'All Usages')] + [(category.id, category.name) for category in usage_categories]
-
-    keyword = request.args.get('keyword')
-    min_price = request.args.get('min_price')
-    max_price = request.args.get('max_price')
-    language_id = request.args.get('language')
-    usage_id = request.args.get('usage')
-
-    products = Product.query.filter_by(is_active=True)
-
-    conditions = []
-
-    if keyword:
-        conditions.append(Product.name.ilike(f'%{keyword}%'))
-
-    category_conditions = []
-    if language_id and usage_id:
-        category_conditions.append(db.and_(Product.language_id == language_id, Product.category_id == usage_id))
-    elif language_id:
-        category_conditions.append(db.or_(Product.language_id == language_id))
-    elif usage_id:
-        category_conditions.append(db.or_(Product.category_id == usage_id))
-    conditions.append(db.and_(*category_conditions))
-
-    if min_price or max_price:
-        price_conditions = []
-        if min_price:
-            price_conditions.append(db.and_(Product.price >= min_price))
-        if max_price:
-            price_conditions.append(db.and_(Product.price <= max_price))
-        conditions.append(db.and_(*price_conditions))
-
-    if conditions:
-        products = products.filter(db.or_(*conditions))
-
-    print(conditions)
-    products = products.all()
-
-    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        return render_template('search_results_partial.html', products=products)
-
-    return render_template('search_results.html', products=products, search_form=search_form) """
 
 @product_bp.route('/search')
 def search():
