@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
+from app.models.order import Order
 from app.models.review import Review
 from app.models.product import Product
 from app import db
@@ -12,6 +13,17 @@ review_bp = Blueprint('review', __name__, url_prefix='/reviews')
 def create_review(product_id):
     form = ReviewForm()
     product = Product.query.get_or_404(product_id)
+
+    # 사용자의 구매 여부 확인
+    if not Order.has_purchased(current_user.id, product):
+        flash('You can only write a review for a product you have purchased.', 'warning')
+        return redirect(url_for('product.get_product', product_id=product.id))
+
+    # 사용자가 이미 리뷰를 작성했는지 확인
+    existing_review = Review.query.filter_by(user_id=current_user.id, product_id=product.id).first()
+    if existing_review:
+        flash('You have already written a review for this product.', 'warning')
+        return redirect(url_for('product.get_product', product_id=product.id))
 
     if form.validate_on_submit():
         rating = form.rating.data
