@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import FileField, StringField, PasswordField, SubmitField, TextAreaField, FloatField, IntegerField, SelectField, DateField
-from wtforms.validators import DataRequired, Email, EqualTo, NumberRange, Optional
+from wtforms.validators import DataRequired, Email, EqualTo, NumberRange, Optional, Length
 from flask_wtf.file import FileField, FileRequired, FileAllowed
 
 class RegistrationForm(FlaskForm):
@@ -51,3 +51,18 @@ class ReviewForm(FlaskForm):
     rating = SelectField('Rating', coerce=int, choices=[(i, str(i)) for i in range(1, 6)], validators=[DataRequired()])
     comment = TextAreaField('Comment')
     submit = SubmitField('Submit Review')
+
+class ProfileUpdateForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    submit = SubmitField('Update Profile')
+
+class PasswordChangeForm(FlaskForm):
+    current_password = PasswordField('Current Password', validators=[DataRequired()])
+    new_password = PasswordField('New Password', validators=[DataRequired(), Length(min=8)])
+    confirm_new_password = PasswordField('Confirm New Password', validators=[DataRequired(), EqualTo('new_password')])
+    submit = SubmitField('Change Password')
+
+class ChatForm(FlaskForm):
+    message = TextAreaField('Message', validators=[DataRequired()])
+    submit = SubmitField('Send')

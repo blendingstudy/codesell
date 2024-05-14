@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="container">
+    <h1>Chat Rooms</h1>
+    <div class="row">
+      <div class="col-md-8">
+        <ul class="list-group">
+          {% for chat_room in chat_rooms %}
+            <li class="list-group-item">
+              <a href="{{ url_for('chat.chat_room', chat_room_id=chat_room.id) }}">{{ chat_room.name }}</a>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="col-md-4">
+        <form id="create-chat-room-form">
+          <div class="form-group">
+            <label for="chat-room-name">Create New Chat Room</label>
+            <input type="text" class="form-control" id="chat-room-name" name="name" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Create</button>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var createChatRoomForm = document.getElementById('create-chat-room-form');
+      createChatRoomForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        var chatRoomName = document.getElementById('chat-room-name').value;
+        fetch("{{ url_for('chat.create_chat_room') }}", {
+          method: 'POST',
+          body: new FormData(createChatRoomForm)
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'success') {
+            var chatRoomId = data.chat_room_id;
+            window.location.href = "{{ url_for('chat.chat_room', chat_room_id='') }}" + chatRoomId;
+          } else {
+            alert('Failed to create chat room.');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('An error occurred while creating the chat room.');
+        });
+      });
+    });
+  </script>
+{% endblock %}

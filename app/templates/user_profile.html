@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <img src="{{ user.profile_picture }}" class="card-img-top" alt="User Profile Picture">
+                <div class="card-body">
+                    <h5 class="card-title">{{ user.username }}</h5>
+                    <p class="card-text">{{ user.email }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <h2>About {{ user.username }}</h2>
+            <p>{{ user.bio }}</p>
+            <hr>
+            <h3>Products</h3>
+            <div class="row">
+                {% for product in user.products %}
+                <div class="col-md-4">
+                    <div class="card">
+                        <img src="{{ product.image }}" class="card-img-top" alt="{{ product.name }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ product.name }}</h5>
+                            <p class="card-text">{{ product.description }}</p>
+                            <a href="{{ url_for('product.get_product', product_id=product.id) }}" class="btn btn-primary">View Product</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <hr>
+            <h3>Reviews</h3>
+            <div class="row">
+                {% for review in user.reviews %}
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ review.product.name }}</h5>
+                            <p class="card-text">{{ review.content }}</p>
+                            <p class="card-text"><small class="text-muted">{{ review.created_at }}</small></p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-md-12">
+            <a href="{{ url_for('chat.chat_room', user_id=user.id) }}" class="btn btn-primary">Start Chat</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

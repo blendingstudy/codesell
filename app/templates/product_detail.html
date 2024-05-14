@@ -18,13 +18,18 @@
         <p>Price: ${{ product.price }}</p>
         <p>Language: {{ product.language.name }}</p>
         <p>Usage: {{ product.category.name }}</p>
-        <p>Seller: {{ product.seller.username }}</p>
+        <p>Seller: <a href="{{ url_for('auth.user_profile', user_id=product.seller.id) }}">{{ product.seller.username }}</a></p>
         <p>Average Rating: {{ average_rating }}</p>
         <a href="{{ url_for('product.download_code', product_id=product.id) }}" class="btn btn-primary">Download Code</a>
         <form action="{{ url_for('cart.add_to_cart', product_id=product.id) }}" method="POST" class="d-inline">
           <input type="hidden" name="quantity" value="1">
           <button type="submit" class="btn btn-success">Add to Cart</button>
         </form>
+        {% if current_user.is_authenticated and current_user.id != product.seller.id %}
+          <form action="{{ url_for('auth.start_chat', user_id=product.seller.id) }}" method="POST" class="d-inline">
+            <button type="submit" class="btn btn-secondary">Chat with Seller</button>
+          </form>
+        {% endif %}
       </div>
     </div>
 
