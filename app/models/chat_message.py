@@ -24,8 +24,10 @@ class ChatMessage(db.Model):
         return {
             'id': self.id,
             'content': self.content,
-            'timestamp': self.timestamp.isoformat(),
             'user_id': self.user_id,
+            'username': self.user.username,
             'chat_room_id': self.chat_room_id,
-            'username': self.user.username
+            'timestamp': self.timestamp.isoformat()
         }
+    
+    

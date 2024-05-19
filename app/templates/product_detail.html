@@ -26,7 +26,7 @@
           <button type="submit" class="btn btn-success">Add to Cart</button>
         </form>
         {% if current_user.is_authenticated and current_user.id != product.seller.id %}
-          <form action="{{ url_for('auth.start_chat', user_id=product.seller.id) }}" method="POST" class="d-inline">
+          <form action="{{ url_for('chat.start_chat', user_id=product.seller.id) }}" method="POST" class="d-inline">
             <button type="submit" class="btn btn-secondary">Chat with Seller</button>
           </form>
         {% endif %}

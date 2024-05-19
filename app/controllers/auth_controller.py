@@ -192,16 +192,3 @@ def seller_info(user_id):
     user = User.query.get_or_404(user_id)
     products = user.products
     return render_template('seller_info.html', user=user, products=products) """
-
-@auth_bp.route('/start_chat/<int:user_id>', methods=['POST'])
-@login_required
-def start_chat(user_id):
-    user = User.query.get_or_404(user_id)
-    chat_room = ChatRoom.query.filter_by(user1_id=current_user.id, user2_id=user.id).first()
-    if not chat_room:
-        chat_room = ChatRoom.query.filter_by(user1_id=user.id, user2_id=current_user.id).first()
-    if not chat_room:
-        chat_room = ChatRoom(user1_id=current_user.id, user2_id=user.id)
-        db.session.add(chat_room)
-        db.session.commit()
-    return redirect(url_for('chat.chat_room', chat_room_id=chat_room.id))
