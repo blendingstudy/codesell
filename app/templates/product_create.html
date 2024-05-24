@@ -1,36 +1,38 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h1>Create Product</h1>
-  <form method="POST" action="{{ url_for('product.create_product') }}" enctype="multipart/form-data">
-    {{ form.csrf_token }}
-    <div class="form-group">
-      {{ form.name.label }} {{ form.name(class='form-control') }}
-    </div>
-    <div class="form-group">
-      {{ form.description.label }} {{ form.description(class='form-control') }}
-    </div>
-    <div class="form-group">
-      {{ form.price.label }} {{ form.price(class='form-control') }}
-    </div>
-    <div class="form-group">
-      {{ form.code_file.label }} {{ form.code_file(class='form-control-file') }}
-      {% for error in form.code_file.errors %}
-        <span class="text-danger">{{ error }}</span>
-      {% endfor %}
-    </div>
-    <div class="form-group">
-      {{ form.language.label }} {{ form.language(class='form-control') }}
-      {% for error in form.language.errors %}
-        <span class="text-danger">{{ error }}</span>
-      {% endfor %}
-    </div>
-    <div class="form-group">
-      {{ form.usage.label }} {{ form.usage(class='form-control') }}
-      {% for error in form.usage.errors %}
-        <span class="text-danger">{{ error }}</span>
-      {% endfor %}
-    </div>
-    {{ form.submit(class='btn btn-primary') }}
-  </form>
+  <div class="container mt-4">
+    <h1 class="mb-4">Create Product</h1>
+    <form method="POST" action="{{ url_for('product.create_product') }}" enctype="multipart/form-data">
+      {{ form.csrf_token }}
+      <div class="form-group">
+        {{ form.name.label(class='font-weight-bold') }} {{ form.name(class='form-control') }}
+      </div>
+      <div class="form-group">
+        {{ form.description.label(class='font-weight-bold') }} {{ form.description(class='form-control') }}
+      </div>
+      <div class="form-group">
+        {{ form.price.label(class='font-weight-bold') }} {{ form.price(class='form-control') }}
+      </div>
+      <div class="form-group">
+        {{ form.code_file.label(class='font-weight-bold') }} {{ form.code_file(class='form-control-file') }}
+        {% for error in form.code_file.errors %}
+          <small class="text-danger">{{ error }}</small>
+        {% endfor %}
+      </div>
+      <div class="form-group">
+        {{ form.language.label(class='font-weight-bold') }} {{ form.language(class='form-control') }}
+        {% for error in form.language.errors %}
+          <small class="text-danger">{{ error }}</small>
+        {% endfor %}
+      </div>
+      <div class="form-group">
+        {{ form.usage.label(class='font-weight-bold') }} {{ form.usage(class='form-control') }}
+        {% for error in form.usage.errors %}
+          <small class="text-danger">{{ error }}</small>
+        {% endfor %}
+      </div>
+      {{ form.submit(class='btn btn-primary') }}
+    </form>
+  </div>
 {% endblock %}

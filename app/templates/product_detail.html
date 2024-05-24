@@ -3,7 +3,7 @@
 {% block title %}{{ product.name }}{% endblock %}
 
 {% block content %}
-  <div class="container">
+  <div class="container mt-4">
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ url_for('product.index') }}">Products</a></li>
@@ -15,11 +15,11 @@
       <div class="col-md-12">
         <h1>{{ product.name }}</h1>
         <p>{{ product.description }}</p>
-        <p>Price: ${{ product.price }}</p>
-        <p>Language: {{ product.language.name }}</p>
-        <p>Usage: {{ product.category.name }}</p>
-        <p>Seller: <a href="{{ url_for('auth.user_profile', user_id=product.seller.id) }}">{{ product.seller.username }}</a></p>
-        <p>Average Rating: {{ average_rating }}</p>
+        <p><strong>Price:</strong> ${{ product.price }}</p>
+        <p><strong>Language:</strong> {{ product.language.name }}</p>
+        <p><strong>Usage:</strong> {{ product.category.name }}</p>
+        <p><strong>Seller:</strong> <a href="{{ url_for('auth.user_profile', user_id=product.seller.id) }}">{{ product.seller.username }}</a></p>
+        <p><strong>Average Rating:</strong> {{ average_rating }}</p>
         <a href="{{ url_for('product.download_code', product_id=product.id) }}" class="btn btn-primary">Download Code</a>
         <form action="{{ url_for('cart.add_to_cart', product_id=product.id) }}" method="POST" class="d-inline">
           <input type="hidden" name="quantity" value="1">
@@ -58,6 +58,7 @@
     <div class="row">
       <div class="col-md-12">
         <h3>Reviews</h3>
+          <a href="{{ url_for('review.review_list', product_id=product.id) }}" class="btn btn-primary mb-3">Review List</a>
         {% if current_user.is_authenticated %}
           <a href="{{ url_for('review.create_review', product_id=product.id) }}" class="btn btn-primary mb-3">Write a Review</a>
         {% endif %}

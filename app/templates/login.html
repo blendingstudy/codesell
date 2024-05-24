@@ -4,20 +4,24 @@
 
 {% block content %}
   <div class="container">
-    <h1>Login</h1>
-    <form method="POST" action="{{ url_for('auth.login') }}">
-        {{ form.csrf_token }}
-        <div class="form-group">
-          {{ form.email.label }} {{ form.email(class='form-control') }}
-        </div>
-        <div class="form-group">
-          {{ form.password.label }} {{ form.password(class='form-control') }}
-        </div>
-        {{ form.submit(class='btn btn-primary') }}
-      </form>
+    <h1 class="mt-5">Login</h1>
+    <form method="POST" action="{{ url_for('auth.login') }}" class="mt-4">
+      {{ form.csrf_token }}
+      <div class="form-group">
+        {{ form.email.label(class='font-weight-bold') }} 
+        {{ form.email(class='form-control', placeholder='Enter your email') }}
+      </div>
+      <div class="form-group">
+        {{ form.password.label(class='font-weight-bold') }}
+        {{ form.password(class='form-control', placeholder='Enter your password') }}
+      </div>
+      {{ form.submit(class='btn btn-primary btn-block') }}
+    </form>
     <hr>
-    <a href="{{ url_for('auth.kakao_login') }}">Login with Kakao</a>
-    <a href="{{ url_for('auth.naver_login') }}">Login with Naver</a>
-    <p>Don't have an account? <a href="{{ url_for('auth.register') }}">Register here</a>.</p>
+    <div class="text-center">
+      <a href="{{ url_for('auth.kakao_login') }}" class="btn btn-outline-dark mb-2">Login with Kakao</a>
+      <a href="{{ url_for('auth.naver_login') }}" class="btn btn-outline-success mb-3">Login with Naver</a>
+      <p>Don't have an account? <a href="{{ url_for('auth.register') }}">Register here</a>.</p>
+    </div>
   </div>
 {% endblock %}

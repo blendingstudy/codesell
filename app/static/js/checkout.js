@@ -1,3 +1,4 @@
+console.log('checkout.js loaded');
 $(document).ready(function() {
     $('#pay-button').click(function() {
       var IMP = window.IMP;

@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="container">
-  <h1>Manage Product</h1>
+  <h1 class="mt-4">Manage Product</h1>
 
   {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
@@ -14,7 +14,7 @@
     {% endif %}
   {% endwith %}
 
-  <form method="POST" action="{{ url_for('mypage.manage_product', product_id=product.id) }}" enctype="multipart/form-data">
+  <form method="POST" action="{{ url_for('mypage.manage_product', product_id=product.id) }}" enctype="multipart/form-data" class="mt-4">
     <div class="form-group">
       <label for="name">Name</label>
       <input type="text" class="form-control" id="name" name="name" value="{{ product.name }}" required>

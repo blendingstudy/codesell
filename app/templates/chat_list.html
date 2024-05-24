@@ -2,16 +2,16 @@
 
 {% block content %}
   <div class="container">
-    <h1>Chat Rooms</h1>
+    <h1 class="mt-4">Chat Rooms</h1>
     <div class="row">
       <div class="col-md-8">
-        <ul class="list-group">
+        <div class="list-group">
           {% for chat_room in chat_rooms %}
-            <li class="list-group-item">
-              <a href="{{ url_for('chat.chat_room', chat_room_id=chat_room.id) }}">Chat with {% if chat_room.user1_id == current_user.id %}{{ chat_room.user2.username }}{% else %}{{ chat_room.user1.username }}{% endif %}</a>
-            </li>
+            <a href="{{ url_for('chat.chat_room', chat_room_id=chat_room.id) }}" class="list-group-item list-group-item-action">
+              Chat with {% if chat_room.user1_id == current_user.id %}{{ chat_room.user2.username }}{% else %}{{ chat_room.user1.username }}{% endif %}
+            </a>
           {% endfor %}
-        </ul>
+        </div>
       </div>
     </div>
   </div>

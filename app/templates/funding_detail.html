@@ -1,73 +1,73 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h1>{{ funding.title }} - {{ funding.creator.username }}</h1>
-  
-  <div class="row">
-    <div class="col-md-8">
-      <p>{{ funding.description }}</p>
-      
-      <ul class="list-group mb-4">
-        <li class="list-group-item">Goal: ${{ funding.goal_amount }}</li>
-        <li class="list-group-item">Current: ${{ funding.current_amount }}</li>
-        <li class="list-group-item">Start Date: {{ funding.start_date.strftime('%Y-%m-%d') }}</li>
-        <li class="list-group-item">End Date: {{ funding.end_date.strftime('%Y-%m-%d') }}</li>
-        <li class="list-group-item">Status: {{ funding.status.capitalize() }}</li>
-      </ul>
-      
-      <!-- {% if funding.is_ongoing() %}
-        <form action="{{ url_for('funding.funding_participate', funding_id=funding.id) }}" method="post" class="participate-form">
-          <div class="input-group mb-3">
-            <input type="number" name="totalPrice" class="form-control" placeholder="Participation Amount" required>
-            <div class="input-group-append">
-              <button type="button" id="pay-button" class="btn btn-primary">Participate</button>
-            </div>
-          </div>
-        </form>
-        <script src="{{ url_for('static', filename='js/checkout.js') }}"></script>
-        <script src="{{ url_for('static', filename='js/funding.js') }}"></script>
-      {% endif %} -->
-
-      {% if funding.is_ongoing() %}
-        <form id="participate-form" class="participate-form" data-funding-id="{{ funding.id }}">
-          <div class="input-group mb-3">
-            <input type="number" name="amount" id="amount" class="form-control" placeholder="Participation Amount" required>
-            <div class="input-group-append">
-              <button type="button" id="pay-button" class="btn btn-primary">Participate</button>
-            </div>
-          </div>
-        </form>
-        <script src="{{ url_for('static', filename='js/funding.js') }}"></script>
-      {% endif %}
-      
-      {% if current_user == funding.creator %}
-        <div class="mt-4">
-          <a href="{{ url_for('funding.funding_edit', funding_id=funding.id) }}" class="btn btn-secondary mr-2">Edit</a>
-          <form action="{{ url_for('funding.funding_delete', funding_id=funding.id) }}" method="post" class="d-inline">
-            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this funding?')">Delete</button>
-          </form>
-        </div>
-      {% endif %}
-    </div>
+  <div class="container mt-4">
+    <h1>{{ funding.title }} - {{ funding.creator.username }}</h1>
     
-    <div class="col-md-4">
-      <h2>Recent Participants</h2>
-      <ul class="list-group">
-        {% for participation in recent_participations %}
-          <li class="list-group-item">
-            {{ participation.user.username }} - ${{ participation.amount }}
-          </li>
-        {% endfor %}
-      </ul>
+    <div class="row">
+      <div class="col-md-8">
+        <p class="lead">{{ funding.description }}</p>
+        
+        <ul class="list-group mb-4">
+          <li class="list-group-item"><strong>Goal:</strong> ${{ funding.goal_amount }}</li>
+          <li class="list-group-item"><strong>Current:</strong> ${{ funding.current_amount }}</li>
+          <li class="list-group-item"><strong>Start Date:</strong> {{ funding.start_date.strftime('%Y-%m-%d') }}</li>
+          <li class="list-group-item"><strong>End Date:</strong> {{ funding.end_date.strftime('%Y-%m-%d') }}</li>
+          <li class="list-group-item"><strong>Status:</strong> {{ funding.status.capitalize() }}</li>
+        </ul>
+        
+        {% if funding.is_ongoing() %}
+          <form id="participate-form" class="participate-form" data-funding-id="{{ funding.id }}">
+            <div class="input-group mb-3">
+              <input type="number" name="amount" id="amount" class="form-control" placeholder="Participation Amount" required>
+              <div class="input-group-append">
+                <button type="button" id="pay-button" class="btn btn-primary">Participate</button>
+              </div>
+            </div>
+          </form>
+        {% endif %}
+        
+        {% if current_user == funding.creator %}
+          <div class="mt-4">
+            <a href="{{ url_for('funding.funding_edit', funding_id=funding.id) }}" class="btn btn-secondary mr-2">Edit</a>
+            <form action="{{ url_for('funding.funding_delete', funding_id=funding.id) }}" method="post" class="d-inline">
+              <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this funding?')">Delete</button>
+            </form>
+          </div>
+        {% endif %}
+      </div>
       
-      <h2 class="mt-4">Top Participants</h2>
-      <ul class="list-group">
-        {% for participation in top_participations %}
-          <li class="list-group-item">
-            {{ participation.user.username }} - ${{ participation.amount }}
-          </li>
-        {% endfor %}
-      </ul>
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0">Recent Participants</h5>
+          </div>
+          <ul class="list-group list-group-flush">
+            {% for participation in recent_participations %}
+              <li class="list-group-item">
+                {{ participation.user.username }} - ${{ participation.amount }}
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+        
+        <div class="card mt-4">
+          <div class="card-header">
+            <h5 class="mb-0">Top Participants</h5>
+          </div>
+          <ul class="list-group list-group-flush">
+            {% for participation in top_participations %}
+              <li class="list-group-item">
+                {{ participation.user.username }} - ${{ participation.amount }}
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
     </div>
   </div>
+{% endblock %}
+
+{% block scripts %}
+  <script src="{{ url_for('static', filename='js/funding.js') }}"></script>
 {% endblock %}

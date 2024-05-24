@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="container">
-  <h1>My Products</h1>
+  <h1 class="mt-4">My Products</h1>
 
   {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
@@ -15,7 +15,7 @@
   {% endwith %}
 
   {% if products %}
-    <table class="table">
+    <table class="table table-striped">
       <thead>
         <tr>
           <th>ID</th>

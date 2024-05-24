@@ -3,70 +3,78 @@
 {% block title %}Search Results{% endblock %}
 
 {% block content %}
-  <div class="container">
-    <h1>Search Results</h1>
-    
-    <form action="{{ url_for('product.search') }}" method="GET" class="mb-4">
-      <div class="form-group">
-        <label for="keyword">Search:</label>
-        <input type="text" name="keyword" id="keyword" class="form-control" value="{{ search_form.keyword.data or '' }}">
-      </div>
-      
-      <div class="form-group">
-        <label for="min_price">Minimum Price:</label>
-        <input type="number" name="min_price" id="min_price" class="form-control" step="0.01" value="{{ search_form.min_price.data or '' }}">
-      </div>
-      
-      <div class="form-group">
-        <label for="max_price">Maximum Price:</label>
-        <input type="number" name="max_price" id="max_price" class="form-control" step="0.01" value="{{ search_form.max_price.data or '' }}">
-      </div>
-      
-      <div class="form-group">
-        <label for="language">Language:</label>
-        <select name="language" id="language" class="form-control">
-          {% for choice in search_form.language.choices %}
-            <option value="{{ choice[0] }}" {% if search_form.language.data == choice[0] %}selected{% endif %}>{{ choice[1] }}</option>
-          {% endfor %}
-        </select>
-      </div>
-      
-      <div class="form-group">
-        <label for="usage">Usage:</label>
-        <select name="usage" id="usage" class="form-control">
-          {% for choice in search_form.usage.choices %}
-            <option value="{{ choice[0] }}" {% if search_form.usage.data == choice[0] %}selected{% endif %}>{{ choice[1] }}</option>
-          {% endfor %}
-        </select>
-      </div>
-      
-      <button type="submit" class="btn btn-primary">Search</button>
-    </form>
-    
-    <hr>
-    
-    {% if products %}
-      <p>Found {{ products|length }} product(s).</p>
-      
-      <div class="row">
-        {% for product in products %}
-          <div class="col-md-4">
-            <div class="card mb-4">
-              <div class="card-body">
-                <h5 class="card-title">{{ product.name }}</h5>
-                <p class="card-text">{{ product.description }}</p>
-                <p class="card-text">Price: ${{ product.price }}</p>
-                <p class="card-text">Seller: {{ product.seller.username }}</p>
-                <a href="{{ url_for('product.get_product', product_id=product.id) }}" class="btn btn-primary">View Details</a>
-              </div>
-            </div>
-          </div>
-        {% endfor %}
-      </div>
-    {% else %}
-      <p>No products found.</p>
-    {% endif %}
-    
-    <a href="{{ url_for('product.index') }}" class="btn btn-secondary">Back to Product List</a>
-  </div>
+<div class="container mt-4">
+ <h1 class="mb-4">Search Results</h1>
+
+ <form action="{{ url_for('product.search') }}" method="GET" class="mb-4">
+   <div class="form-group">
+     <label for="keyword">Search:</label>
+     <input type="text" name="keyword" id="keyword" class="form-control" value="{{ search_form.keyword.data or '' }}" placeholder="Enter keyword">
+   </div>
+
+   <div class="form-row">
+     <div class="form-group col-md-6">
+       <label for="min_price">Minimum Price:</label>
+       <input type="number" name="min_price" id="min_price" class="form-control" step="0.01" value="{{ search_form.min_price.data or '' }}" placeholder="Enter minimum price">
+     </div>
+     <div class="form-group col-md-6">
+       <label for="max_price">Maximum Price:</label>
+       <input type="number" name="max_price" id="max_price" class="form-control" step="0.01" value="{{ search_form.max_price.data or '' }}" placeholder="Enter maximum price">
+     </div>
+   </div>
+
+   <div class="form-row">
+     <div class="form-group col-md-6">
+       <label for="language">Language:</label>
+       <select name="language" id="language" class="form-control">
+         <option value="">All</option>
+         {% for choice in search_form.language.choices %}
+           <option value="{{ choice[0] }}" {% if search_form.language.data == choice[0] %}selected{% endif %}>{{ choice[1] }}</option>
+         {% endfor %}
+       </select>
+     </div>
+     <div class="form-group col-md-6">
+       <label for="usage">Usage:</label>
+       <select name="usage" id="usage" class="form-control">
+         <option value="">All</option>
+         {% for choice in search_form.usage.choices %}
+           <option value="{{ choice[0] }}" {% if search_form.usage.data == choice[0] %}selected{% endif %}>{{ choice[1] }}</option>
+         {% endfor %}
+       </select>
+     </div>
+   </div>
+
+   <button type="submit" class="btn btn-primary">Search</button>
+ </form>
+
+ <hr>
+
+ {% if products %}
+   <p class="mb-4">Found {{ products|length }} product(s).</p>
+
+   <div class="row">
+     {% for product in products %}
+       <div class="col-md-4 mb-4">
+         <div class="card h-100">
+           <div class="card-body">
+             <h5 class="card-title">{{ product.name }}</h5>
+             <p class="card-text">{{ product.description }}</p>
+             <p class="card-text">Price: ${{ product.price }}</p>
+             <p class="card-text">Seller: {{ product.seller.username }}</p>
+           </div>
+           <div class="card-footer">
+             <a href="{{ url_for('product.get_product', product_id=product.id) }}" class="btn btn-primary">View Details</a>
+           </div>
+         </div>
+       </div>
+     {% endfor %}
+   </div>
+ {% else %}
+   <div class="alert alert-info" role="alert">
+     No products found.
+   </div>
+ {% endif %}
+
+ <a href="{{ url_for('product.index') }}" class="btn btn-secondary mt-4">Back to Product List</a>
+</div>
 {% endblock %}
