@@ -18,8 +18,9 @@ class Product(BaseModel):
     seller_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='SET NULL'), nullable=True)
     seller = db.relationship('User', backref=db.backref('products', lazy=True))
     is_active = db.Column(db.Boolean, default=True)
+    demo_link = db.Column(db.String(255), nullable=True)
 
-    def __init__(self, name, description, price, code_file, category_id, language_id, seller_id):
+    def __init__(self, name, description, price, code_file, category_id, language_id, seller_id, demo_link):
         self.name = name
         self.description = description
         self.price = price
@@ -27,6 +28,7 @@ class Product(BaseModel):
         self.category_id = category_id
         self.language_id = language_id
         self.seller_id = seller_id
+        self.demo_link = demo_link
 
     def __repr__(self):
         return f'<Product {self.name}>'
