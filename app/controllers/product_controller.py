@@ -110,8 +110,8 @@ def create_product():
 @product_bp.route('/<int:product_id>')
 def get_product(product_id):
     product = Product.query.filter_by(id=product_id, is_active=True).first_or_404()
-    reviews = Review.query.filter_by(product_id=product_id).all()  # 상품의 리뷰 목록 조회
-    average_rating = product.get_average_rating()  # 상품의 평균 평점 계산
+    reviews = Review.query.filter_by(product_id=product_id).all()
+    average_rating = product.get_average_rating()
     return render_template('product_detail.html', product=product, reviews=reviews, average_rating=average_rating, demo_link=product.demo_link)
 
 @product_bp.route('/<int:product_id>/update', methods=['GET', 'POST'])

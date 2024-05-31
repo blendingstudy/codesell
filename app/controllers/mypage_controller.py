@@ -13,7 +13,8 @@ mypage_bp = Blueprint('mypage', __name__, url_prefix='/mypage')
 def index():
     orders = Order.query.filter_by(user_id=current_user.id).all()
     cart_items = CartItem.query.filter_by(user_id=current_user.id).all()
-    return render_template('mypage_index.html', orders=orders, cart_items=cart_items)
+    received_gifts = current_user.received_gifts
+    return render_template('mypage_index.html', orders=orders, cart_items=cart_items, received_gifts=received_gifts)
 
 @mypage_bp.route('/edit_profile', methods=['GET', 'POST'])
 @login_required

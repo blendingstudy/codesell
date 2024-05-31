@@ -66,3 +66,12 @@ class PasswordChangeForm(FlaskForm):
 class ChatForm(FlaskForm):
     message = TextAreaField('Message', validators=[DataRequired()])
     submit = SubmitField('Send')
+
+class UserSearchForm(FlaskForm):
+    search_term = StringField('Search', validators=[DataRequired()])
+    submit = SubmitField('Search')
+
+class GiftForm(FlaskForm):
+    receiver_email = StringField('Receiver Email', validators=[DataRequired(), Email()])
+    message = TextAreaField('Message', validators=[Optional()])
+    submit = SubmitField('Send Gift')

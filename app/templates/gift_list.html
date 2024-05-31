@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+  <h2>받은 선물 목록</h2>
+  {% if received_gifts %}
+  <table class="table">
+    <thead>
+      <tr>
+        <th>보낸 사람</th>
+        <th>코드 상품</th>
+        <th>메시지</th>
+        <th>받은 날짜</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for gift in received_gifts %}
+      <tr>
+        <td>{{ gift.sender.username }}</td>
+        <td><a href="{{ url_for('product.get_product', product_id=gift.product.id) }}">{{ gift.product.name }}</a></td>
+        <td>{{ gift.message }}</td>
+        <td>{{ gift.sent_at.strftime('%Y-%m-%d') }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p>받은 선물이 없습니다.</p>
+  {% endif %}
+</div>
+{% endblock %}

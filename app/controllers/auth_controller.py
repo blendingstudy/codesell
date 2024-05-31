@@ -8,7 +8,7 @@ from app.models.order import OrderItem
 from app.models.product import Product
 from app.models.user import User
 from app import db
-from app.forms import RegistrationForm, LoginForm
+from app.forms import RegistrationForm, LoginForm, UserSearchForm
 from urllib.parse import urlparse
 from config import Config
 
@@ -192,3 +192,12 @@ def seller_info(user_id):
     user = User.query.get_or_404(user_id)
     products = user.products
     return render_template('seller_info.html', user=user, products=products) """
+
+@auth_bp.route('/search', methods=['GET', 'POST'])
+def search_users():
+    form = UserSearchForm()  # 폼 생성
+    if request.method == 'POST':
+        search_term = request.form['search_term']
+        users = User.query.filter(User.username.ilike(f'%{search_term}%')).all()
+        return render_template('user_search_results.html', users=users, search_term=search_term)
+    return render_template('user_search.html', form=form)  # 폼 전달

@@ -37,6 +37,7 @@ def create_app():
    from app.models.review import Review
    from app.models.chat_message import ChatMessage
    from app.models.chat_room import ChatRoom
+   from app.models.gift import Gift
 
    from app.controllers.auth_controller import auth_bp
    from app.controllers.product_controller import product_bp
@@ -47,6 +48,7 @@ def create_app():
    from app.controllers.admin_controller import admin_bp
    from app.controllers.review_controller import review_bp
    from app.controllers.chat_controller import chat_bp
+   from app.controllers.gift_controller import gift_bp
 
    app.register_blueprint(auth_bp)
    app.register_blueprint(product_bp)
@@ -57,6 +59,7 @@ def create_app():
    app.register_blueprint(admin_bp)
    app.register_blueprint(review_bp)
    app.register_blueprint(chat_bp)
+   app.register_blueprint(gift_bp)
 
    from app.socket_io import handle_connect, handle_disconnect, handle_join_room, handle_leave_room, handle_send_message
    socketio.on('connect')(handle_connect)

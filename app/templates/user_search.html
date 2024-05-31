@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>User Search</h1>
+<form method="POST" action="{{ url_for('auth.search_users') }}">
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+        {{ form.search_term.label }}
+        {{ form.search_term(class='form-control') }}
+    </div>
+    {{ form.submit(class='btn btn-primary') }}
+</form>
+{% endblock %}
