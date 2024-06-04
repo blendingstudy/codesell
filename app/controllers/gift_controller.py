@@ -1,6 +1,7 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, jsonify, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from app import db
+from app.models.cart import CartItem
 from app.models.gift import Gift
 from app.models.user import User
 from app.models.product import Product
@@ -28,7 +29,7 @@ def send_gift(product_id):
         db.session.commit()
         
         flash('선물이 성공적으로 전송되었습니다.', 'success')
-        return redirect(url_for('product.get_product', product_id=product.id))
+        return jsonify({'success': True, 'redirect_url': url_for('product.get_product', product_id=product.id)})
     
     return render_template('gift_send.html', product=product, form=form)
 
@@ -36,4 +37,5 @@ def send_gift(product_id):
 @login_required
 def gift_list():
     received_gifts = current_user.received_gifts
-    return render_template('gift_list.html', received_gifts=received_gifts)
+    sent_gifts = current_user.sent_gifts
+    return render_template('gift_list.html', received_gifts=received_gifts, sent_gifts=sent_gifts)

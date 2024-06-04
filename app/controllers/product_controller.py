@@ -182,13 +182,16 @@ def delete_product(product_id):
     flash('Product deleted successfully.', 'success')
     return redirect(url_for('product.index'))
 
+from app.models.gift import Gift
+
 @product_bp.route('/<int:product_id>/download')
 @login_required
 def download_code(product_id):
     product = Product.query.filter_by(id=product_id, is_active=True).first_or_404()
     
-    if not Order.has_purchased(current_user.id, product):
-        flash('You have not purchased this product.', 'warning')
+    # 사용자가 해당 상품을 구매했거나 선물로 받았는지 확인
+    if not (Order.has_purchased(current_user.id, product) or Gift.has_received(current_user.id, product)):
+        flash('You have not purchased or received this product as a gift.', 'warning')
         return redirect(url_for('product.get_product', product_id=product.id))
     
     try:

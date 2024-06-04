@@ -14,7 +14,7 @@
       </div>
     </div>
     <div class="col-md-6">
-      <form method="POST" action="{{ url_for('gift.send_gift', product_id=product.id) }}">
+      <form id="gift-form" method="POST" action="{{ url_for('gift.send_gift', product_id=product.id) }}">
         {{ form.hidden_tag() }}
         <div class="form-group">
           {{ form.receiver_email.label(class="form-control-label") }}
@@ -30,9 +30,18 @@
           <span class="text-danger">{{ error }}</span>
           {% endfor %}
         </div>
-        <button type="submit" class="btn btn-primary">선물 보내기</button>
+        <button id="gift-submit-btn" type="button" class="btn btn-primary">선물 보내기</button>
       </form>
     </div>
   </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const productPrice = '{{ product.price|int }}';
+  const userEmail = '{{ current_user.email }}';
+  const userName = '{{ current_user.username }}';
+</script>
+<script src="{{ url_for('static', filename='js/gift.js') }}"></script>
 {% endblock %}

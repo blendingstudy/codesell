@@ -18,3 +18,7 @@ class Gift(db.Model):
     
     def __repr__(self):
         return f'<Gift {self.id}>'
+    
+    @classmethod
+    def has_received(cls, user_id, product):
+        return cls.query.filter_by(receiver_id=user_id, product_id=product.id).first() is not None
