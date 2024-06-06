@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
+from app.models.gift import Gift
 from app.models.order import Order
 from app.models.review import Review
 from app.models.product import Product
@@ -14,9 +15,9 @@ def create_review(product_id):
     form = ReviewForm()
     product = Product.query.get_or_404(product_id)
 
-    # 사용자의 구매 여부 확인
-    if not Order.has_purchased(current_user.id, product):
-        flash('You can only write a review for a product you have purchased.', 'warning')
+    # 사용자가 해당 상품을 구매했거나 선물로 받았는지 확인
+    if not (Order.has_purchased(current_user.id, product) or Gift.has_received(current_user.id, product)):
+        flash('You have not purchased or received this product as a gift.', 'warning')
         return redirect(url_for('product.get_product', product_id=product.id))
 
     # 사용자가 이미 리뷰를 작성했는지 확인

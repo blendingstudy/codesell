@@ -14,6 +14,7 @@ from app import db
 from app.forms import ProductForm, SearchForm
 from app.models.review import Review
 from build_and_deploy import build_and_deploy_code
+from app.models.gift import Gift
 
 product_bp = Blueprint('product', __name__, url_prefix='/products')
 
@@ -92,7 +93,7 @@ def create_product():
             name=form.name.data,
             description=form.description.data,
             price=form.price.data,
-            code_file=code_file_path,
+            code_file=zip_file_path,
             category_id=usage_id,
             language_id=language_id,
             seller_id=current_user.id,
@@ -182,8 +183,6 @@ def delete_product(product_id):
     flash('Product deleted successfully.', 'success')
     return redirect(url_for('product.index'))
 
-from app.models.gift import Gift
-
 @product_bp.route('/<int:product_id>/download')
 @login_required
 def download_code(product_id):
@@ -195,10 +194,26 @@ def download_code(product_id):
         return redirect(url_for('product.get_product', product_id=product.id))
     
     try:
-        code_file_path = os.path.join(current_app.root_path, '..', product.code_file)
-        return send_file(code_file_path, as_attachment=True)
-    except FileNotFoundError:
-        flash('Code file not found.', 'error')
+        # 업로드된 코드 파일 경로
+        uploaded_code_file_path = os.path.join(current_app.root_path, '..', 'uploads', os.path.basename(product.code_file))
+        print(uploaded_code_file_path)
+
+        # 업로드된 코드 파일이 있는 경우 해당 파일을 다운로드
+        if os.path.exists(uploaded_code_file_path):
+            return send_file(uploaded_code_file_path, as_attachment=True)
+        
+        # 샌드박스 디렉토리 경로
+        sandbox_directory = os.path.join(current_app.root_path, '..', 'uploads', product.code_file)
+        print(sandbox_directory)
+
+        # 샌드박스 디렉토리에 코드 파일이 있는 경우 해당 파일을 다운로드
+        if os.path.exists(sandbox_directory):
+            return send_file(sandbox_directory, as_attachment=True)
+        
+        raise FileNotFoundError
+    except FileNotFoundError as e:
+        error_message = str(e)
+        flash(f'Code file not found. Error: {error_message}', 'error')
         return redirect(url_for('product.get_product', product_id=product.id))
 
 @product_bp.route('/search')

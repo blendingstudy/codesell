@@ -81,7 +81,7 @@ def logout():
 def kakao_login():
     client_id = Config.KAKAO_APP_KEY
     redirect_uri = Config.KAKAO_REDIRECT_URL
-    kakao_auth_url = f'https://kauth.kakao.com/oauth/authorize?client_id={client_id}&redirect_uri={redirect_uri}&response_type=code'
+    kakao_auth_url = f'https://kauth.kakao.com/oauth/authorize?client_id={client_id}&redirect_uri={redirect_uri}&response_type=code&prompt=select_account'
     return redirect(kakao_auth_url)
 
 @auth_bp.route('/kakao/callback')
@@ -101,14 +101,9 @@ def kakao_callback():
 
     kakao_account = user_info['kakao_account']
     email = kakao_account['email']
-    nickname = kakao_account['profile']['nickname']
+    print(email)
 
     user = User.query.filter_by(email=email).first()
-    if not user:
-        user = User(email=email, nickname=nickname)
-        db.session.add(user)
-        db.session.commit()
-
     login_user(user)
     return redirect(url_for('index'))
 
@@ -143,13 +138,8 @@ def naver_callback():
     user_info = user_info_response.json().get('response')
 
     email = user_info['email']
-    nickname = user_info['nickname']
 
     user = User.query.filter_by(email=email).first()
-    if not user:
-        user = User(email=email, nickname=nickname)
-        db.session.add(user)
-        db.session.commit()
 
     login_user(user)
     return redirect(url_for('index'))

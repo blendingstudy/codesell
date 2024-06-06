@@ -34,7 +34,7 @@
 
    <section class="featured-fundings bg-light py-5">
        <div class="container">
-           <h2 class="mb-4">Featured Fundings</h2>
+           <h2 class="mb-4">Featured Patronages</h2>
            <div class="row">
                {% for funding in featured_fundings %}
                    <div class="col-md-6">
@@ -53,7 +53,7 @@
                {% endfor %}
            </div>
            <div class="text-center mt-4">
-               <a href="{{ url_for('funding.funding_list') }}" class="btn btn-primary">View All Fundings</a>
+               <a href="{{ url_for('funding.funding_list') }}" class="btn btn-primary">View All Patronages</a>
            </div>
        </div>
    </section>
@@ -65,7 +65,7 @@
            <div class="mt-4">
                <a href="{{ url_for('auth.register') }}" class="btn btn-primary mr-2">Sign Up Now</a>
                <a href="{{ url_for('product.create_product') }}" class="btn btn-secondary mr-2">Add Product</a>
-               <a href="{{ url_for('funding.funding_create') }}" class="btn btn-secondary">Add Funding Product</a>
+               <a href="{{ url_for('funding.funding_create') }}" class="btn btn-secondary">Add Patronage</a>
            </div>
            {% if current_user.is_authenticated and current_user.is_admin %}
                <div class="mt-4">
