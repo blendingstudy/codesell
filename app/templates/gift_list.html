@@ -1,61 +1,71 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container">
-  <h2>받은 선물 목록</h2>
+<div class="container my-4">
+  <h2 class="mb-4">받은 선물 목록</h2>
   {% if received_gifts %}
-  <table class="table">
-    <thead>
-      <tr>
-        <th>보낸 사람</th>
-        <th>코드 상품</th>
-        <th>메시지</th>
-        <th>받은 날짜</th>
-        <th>다운로드</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for gift in received_gifts %}
-      <tr>
-        <td><a href="{{ url_for('auth.user_profile', user_id=gift.sender.id) }}">{{ gift.sender.username }}</a></td>
-        <td><a href="{{ url_for('product.get_product', product_id=gift.product.id) }}">{{ gift.product.name }}</a></td>
-        <td>{{ gift.message }}</td>
-        <td>{{ gift.sent_at.strftime('%Y-%m-%d') }}</td>
-        <td>
-          <a href="{{ url_for('product.download_code', product_id=gift.product.id) }}" class="btn btn-success btn-sm">Download</a>
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  <div class="table-responsive">
+    <table class="table table-striped table-hover">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">보낸 사람</th>
+          <th scope="col">코드 상품</th>
+          <th scope="col">메시지</th>
+          <th scope="col">받은 날짜</th>
+          <th scope="col">다운로드</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for gift in received_gifts %}
+        <tr>
+          <td><a href="{{ url_for('auth.user_profile', user_id=gift.sender.id) }}" class="text-decoration-none">{{ gift.sender.username }}</a></td>
+          <td><a href="{{ url_for('product.get_product', product_id=gift.product.id) }}" class="text-decoration-none">{{ gift.product.name }}</a></td>
+          <td>{{ gift.message }}</td>
+          <td>{{ gift.sent_at.strftime('%Y-%m-%d') }}</td>
+          <td>
+            <a href="{{ url_for('product.download_code', product_id=gift.product.id) }}" class="btn btn-success btn-sm">Download</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
   {% else %}
-  <p>받은 선물이 없습니다.</p>
+  <div class="alert alert-info" role="alert">
+    받은 선물이 없습니다.
+  </div>
   {% endif %}
 
-  <h2>보낸 선물 목록</h2>
+  <hr class="my-4">
+
+  <h2 class="mb-4">보낸 선물 목록</h2>
   {% if sent_gifts %}
-  <table class="table">
-    <thead>
-      <tr>
-        <th>받는 사람</th>
-        <th>코드 상품</th>
-        <th>메시지</th>
-        <th>보낸 날짜</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for gift in sent_gifts %}
-      <tr>
-        <td><a href="{{ url_for('auth.user_profile', user_id=gift.receiver.id) }}">{{ gift.receiver.username }}</a></td>
-        <td><a href="{{ url_for('product.get_product', product_id=gift.product.id) }}">{{ gift.product.name }}</a></td>
-        <td>{{ gift.message }}</td>
-        <td>{{ gift.sent_at.strftime('%Y-%m-%d') }}</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  <div class="table-responsive">
+    <table class="table table-striped table-hover">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">받는 사람</th>
+          <th scope="col">코드 상품</th>
+          <th scope="col">메시지</th>
+          <th scope="col">보낸 날짜</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for gift in sent_gifts %}
+        <tr>
+          <td><a href="{{ url_for('auth.user_profile', user_id=gift.receiver.id) }}" class="text-decoration-none">{{ gift.receiver.username }}</a></td>
+          <td><a href="{{ url_for('product.get_product', product_id=gift.product.id) }}" class="text-decoration-none">{{ gift.product.name }}</a></td>
+          <td>{{ gift.message }}</td>
+          <td>{{ gift.sent_at.strftime('%Y-%m-%d') }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
   {% else %}
-  <p>보낸 선물이 없습니다.</p>
+  <div class="alert alert-info" role="alert">
+    보낸 선물이 없습니다.
+  </div>
   {% endif %}
 </div>
 {% endblock %}

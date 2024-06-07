@@ -1,9 +1,11 @@
 import os
 from flask import Blueprint, render_template, redirect, request, url_for, flash
 from flask_login import login_required, current_user
+from app.models.funding import Funding
 from app.models.order import Order, OrderItem
 from app.models.cart import CartItem
 from app import db
+from app.models.participation import Participation
 from app.models.product import Product
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -15,10 +17,15 @@ def index():
     orders = Order.query.filter_by(user_id=current_user.id).all()
     cart_items = CartItem.query.filter_by(user_id=current_user.id).all()
     received_gifts = current_user.received_gifts
-    # 구매한 상품 목록 가져오기
     purchased_products = Product.query.join(OrderItem).join(Order).filter(Order.user_id == current_user.id).all()
+    
+    # 사용자의 후원 내역 가져오기
+    fundings = db.session.query(Participation, Funding).\
+        join(Funding, Participation.funding_id == Funding.id).\
+        filter(Participation.user_id == current_user.id).all()
+    print(fundings)
 
-    return render_template('mypage_index.html', orders=orders, cart_items=cart_items, received_gifts=received_gifts, purchased_products=purchased_products)
+    return render_template('mypage_index.html', orders=orders, cart_items=cart_items, received_gifts=received_gifts, purchased_products=purchased_products, fundings=fundings)
 
 @mypage_bp.route('/edit_profile', methods=['GET', 'POST'])
 @login_required

@@ -30,14 +30,14 @@ class FundingCreateForm(FlaskForm):
     goal_amount = IntegerField('Goal Amount', validators=[DataRequired(), NumberRange(min=1)])
     start_date = DateField('Start Date', validators=[DataRequired()])
     end_date = DateField('End Date', validators=[DataRequired()])
-    submit = SubmitField('Create Funding')
+    submit = SubmitField('Create Patronage')
 
 class FundingUpdateForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
     description = TextAreaField('Description', validators=[DataRequired()])
     goal_amount = IntegerField('Goal Amount', validators=[DataRequired(), NumberRange(min=1)])
     end_date = DateField('End Date', validators=[DataRequired()])
-    submit = SubmitField('Update Funding')
+    submit = SubmitField('Update Patronage')
 
 class SearchForm(FlaskForm):
     keyword = StringField('Keyword', validators=[Optional()])

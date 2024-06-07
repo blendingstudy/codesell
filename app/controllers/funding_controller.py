@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, render_template, request, redirect, url_for, flash
-from flask_login import current_user
+from flask_login import current_user, login_required
 from app import db
 from app.models.funding import Funding
 from app.models.order import Order
@@ -32,6 +32,7 @@ def funding_detail(funding_id):
         return render_template('funding_fail.html', funding=funding)
 
 @funding_bp.route('/fundings/create', methods=['GET', 'POST'])
+@login_required
 def funding_create():
     form = FundingCreateForm()
     if form.validate_on_submit():

@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, flash, redirect, render_template, url_for
 from flask_socketio import SocketIO
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -18,11 +18,19 @@ def create_app():
    db.init_app(app)
    migrate.init_app(app, db)
    login_manager.init_app(app)
+   login_manager.login_view = 'auth.login'  # 로그인 페이지의 엔드포인트 지정
+   login_manager.login_message = 'Please log in to access this page.'  # 로그인 필요 시 표시할 메시지
+   login_manager.login_message_category = 'info'  # 메시지 카테고리 (Bootstrap 클래스)
    socketio.init_app(app)
 
    @login_manager.user_loader
    def load_user(user_id):
        return User.query.get(int(user_id))
+   
+   @login_manager.unauthorized_handler
+   def unauthorized():
+       flash('Please log in to access this page.', 'info')
+       return redirect(url_for('auth.login'))
 
    @app.route('/')
    def index():

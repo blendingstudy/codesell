@@ -39,3 +39,10 @@ def gift_list():
     received_gifts = current_user.received_gifts
     sent_gifts = current_user.sent_gifts
     return render_template('gift_list.html', received_gifts=received_gifts, sent_gifts=sent_gifts)
+
+@gift_bp.route('/users/check')
+def check_user_exists():
+    email = request.args.get('email')
+    user = User.query.filter_by(email=email).first()
+    exists = user is not None
+    return jsonify({'exists': exists})
